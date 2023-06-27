@@ -26,7 +26,6 @@ import { getUserSubscription } from '~/lib/subscriptions/queries';
  */
 const loadAppData = cache(async () => {
   try {
-    console.log('loadAppData');
     const client = getSupabaseServerClient();
     const session = await requireSession(client);
 
@@ -35,7 +34,7 @@ const loadAppData = cache(async () => {
 
     // we fetch the user record from the Database
     // which is a separate object from the auth metadata
-    const [userRecord, { data: subscription }] = await Promise.all([
+    const [userRecord, { data }] = await Promise.all([
       getUserDataById(client, userId),
       getUserSubscription(client, userId),
     ]);
@@ -44,6 +43,9 @@ const loadAppData = cache(async () => {
       return redirectToHomePage();
     }
 
+    const subscription = data?.subscription;
+    const customerId = data?.customerId;
+
     const csrfToken = getCsrfToken();
     const accessToken = session.access_token;
 
@@ -51,7 +53,8 @@ const loadAppData = cache(async () => {
       accessToken,
       csrfToken,
       session,
-      subscription: subscription ?? undefined,
+      subscription: subscription,
+      customerId,
       user: userRecord,
       ui: getUIStateCookies(),
     };

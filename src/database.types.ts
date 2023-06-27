@@ -34,6 +34,28 @@ export interface Database {
   }
   public: {
     Tables: {
+      customers_subscriptions: {
+        Row: {
+          customer_id: string
+          subscription_id: string
+        }
+        Insert: {
+          customer_id: string
+          subscription_id: string
+        }
+        Update: {
+          customer_id?: string
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customers_subscriptions_subscription_id_fkey"
+            columns: ["subscription_id"]
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean
@@ -48,6 +70,7 @@ export interface Database {
           status: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at: string | null
           trial_starts_at: string | null
+          user_id: string
         }
         Insert: {
           cancel_at_period_end: boolean
@@ -62,6 +85,7 @@ export interface Database {
           status: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string | null
           trial_starts_at?: string | null
+          user_id: string
         }
         Update: {
           cancel_at_period_end?: boolean
@@ -76,66 +100,40 @@ export interface Database {
           status?: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string | null
           trial_starts_at?: string | null
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       users: {
         Row: {
           created_at: string
           display_name: string | null
           id: string
-          onboarded: boolean
           photo_url: string | null
         }
         Insert: {
           created_at?: string
           display_name?: string | null
           id: string
-          onboarded: boolean
           photo_url?: string | null
         }
         Update: {
           created_at?: string
           display_name?: string | null
           id?: string
-          onboarded?: boolean
           photo_url?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "users_id_fkey"
             columns: ["id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      users_subscriptions: {
-        Row: {
-          customer_id: string
-          subscription_id: string | null
-          user_id: string
-        }
-        Insert: {
-          customer_id: string
-          subscription_id?: string | null
-          user_id: string
-        }
-        Update: {
-          customer_id?: string
-          subscription_id?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "users_subscriptions_subscription_id_fkey"
-            columns: ["subscription_id"]
-            referencedRelation: "subscriptions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "users_subscriptions_user_id_fkey"
-            columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }

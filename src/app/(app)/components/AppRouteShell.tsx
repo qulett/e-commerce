@@ -22,13 +22,8 @@ interface Data {
   csrfToken: string | null;
   session: Session;
   user: UserData | null;
-  subscription: Maybe<
-    Subscription & {
-      users_subscriptions: Array<{
-        customerId: string;
-      }>;
-    }
-  >;
+  subscription: Maybe<Subscription>;
+  customerId: Maybe<string>;
   ui: {
     sidebarState?: string;
     theme?: string;
@@ -39,14 +34,10 @@ const RouteShell: React.FCC<{
   data: Data;
 }> = ({ data, children }) => {
   const userSessionContext: UserSession = useMemo(() => {
-    const subscription = data.subscription;
-    const subscriptions = subscription?.users_subscriptions ?? [];
-    const customerId = subscriptions[0]?.customerId;
-
     return {
       auth: data.session,
-      subscription,
-      customerId,
+      subscription: data.subscription,
+      customerId: data.customerId,
       data: data.user ?? undefined,
     };
   }, [data]);

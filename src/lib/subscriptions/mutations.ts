@@ -3,18 +3,18 @@ import type { Stripe } from 'stripe';
 
 import {
   SUBSCRIPTIONS_TABLE,
-  USERS_SUBSCRIPTIONS_TABLE,
+  CUSTOMERS_SUBSCRIPTIONS_TABLE,
 } from '~/lib/db-tables';
-import type { Database } from '../../database.types';
-import { getUserById } from '~/lib/user/database/queries';
 
+import type { Database } from '~/database.types';
 type Client = SupabaseClient<Database>;
 
 type SubscriptionRow = Database['public']['Tables']['subscriptions']['Row'];
 
 export async function addSubscription(
   client: Client,
-  subscription: Stripe.Subscription
+  subscription: Stripe.Subscription,
+  userId: string
 ) {
   const data = subscriptionMapper(subscription);
 
@@ -22,6 +22,7 @@ export async function addSubscription(
     .insert({
       ...data,
       id: subscription.id,
+      user_id: userId
     })
     .select('id')
     .throwOnError()
@@ -61,33 +62,29 @@ export async function updateSubscriptionById(
 }
 
 /**
- * @name setUserSubscriptionData
+ * @name setCustomerSubscriptionData
  * @description Adds or updates a subscription to a user
  */
-export async function setUserSubscriptionData(
+export async function setCustomerSubscriptionData(
   client: Client,
   props: {
-    userId: string;
     customerId: string;
+    userId: string;
     subscriptionId: string;
   }
 ) {
   const { customerId, userId, subscriptionId } = props;
 
-  const { data: user, error } = await getUserById(client, userId);
-
-  if (error || !user) {
-    throw error;
-  }
-
   return client
-    .from(USERS_SUBSCRIPTIONS_TABLE)
+    .from(CUSTOMERS_SUBSCRIPTIONS_TABLE)
     .upsert({
       customer_id: customerId,
-      subscription_id: subscriptionId,
       user_id: userId,
+      subscription_id: subscriptionId,
+    }, {
+      onConflict: 'customer_id',
     })
-    .match({ user_id: userId })
+    .match({ customer_id: customerId })
     .throwOnError();
 }
 

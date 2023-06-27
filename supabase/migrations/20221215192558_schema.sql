@@ -10,10 +10,11 @@ create type subscription_status as ENUM (
 );
 
 create table users (
-  id uuid references auth.users not null primary key,
+  id uuid references auth.users not null,
   photo_url text,
   display_name text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  primary key (id)
 );
 
 create table subscriptions (
@@ -28,14 +29,16 @@ create table subscriptions (
   period_starts_at timestamptz not null,
   period_ends_at timestamptz not null,
   trial_starts_at timestamptz,
-  trial_ends_at timestamptz
+  trial_ends_at timestamptz,
+  user_id uuid not null references public.users (id) on delete cascade
 );
 
-create table users_subscriptions (
-  user_id uuid not null references public.users (id),
-  subscription_id text unique references public.subscriptions (id) on delete set null,
-  customer_id text not null unique,
-  primary key (user_id)
+create table customers_subscriptions (
+  id bigint generated always as identity primary key,
+  customer_id text unique not null,
+  user_id uuid not null references public.users (id) on delete cascade,
+  subscription_id text unique references public.subscriptions (id) on delete
+  set null
 );
 
 insert into storage.buckets (id, name, PUBLIC)
@@ -45,7 +48,7 @@ alter table users enable row level security;
 
 alter table subscriptions enable row level security;
 
-alter table users_subscriptions enable row level security;
+alter table customers_subscriptions enable row level security;
 
 -- inserts a row into public.users
 create function public.handle_new_user()
@@ -71,6 +74,16 @@ users
   for all
     using (auth.uid () = users.id)
     with check (auth.uid () = users.id);
+
+create policy "Users can only read their own subscriptions" on
+subscriptions
+  for select
+    using (auth.uid () = user_id);
+
+create policy "Users can only read their own customers subscriptions" on
+customers_subscriptions
+  for select
+    using (auth.uid () = user_id);
 
 create policy "Avatars can be read and written only by the user that owns the
   avatar" on storage.objects

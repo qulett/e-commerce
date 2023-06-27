@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { SUBSCRIPTIONS_TABLE } from '~/lib/db-tables';
 import type { Database } from '~/database.types';
+import { CUSTOMERS_SUBSCRIPTIONS_TABLE } from '~/lib/db-tables';
+import Subscription from '~/lib/subscriptions/subscription';
 
 type Client = SupabaseClient<Database>;
 
@@ -10,30 +11,32 @@ type Client = SupabaseClient<Database>;
  */
 export async function getUserSubscription(client: Client, userId: string) {
   return client
-    .from(SUBSCRIPTIONS_TABLE)
-    .select(
+    .from(CUSTOMERS_SUBSCRIPTIONS_TABLE)
+    .select<string,  {
+      customerId: string;
+      subscription: Maybe<Subscription>;
+    }>(
       `
-        id,
-        status,
-        currency,
-        interval,
-        cancelAtPeriodEnd: cancel_at_period_end,
-        intervalCount: interval_count,
-        priceId: price_id,
-        createdAt: created_at,
-        periodStartsAt: period_starts_at,
-        periodEndsAt: period_ends_at,
-        trialStartsAt: trial_starts_at,
-        trialEndsAt: trial_ends_at,
-        users_subscriptions !inner (
-          customerId: customer_id,
-          user_id
+        customerId: customer_id,
+        subscription: subscription_id (
+          id,
+          status,
+          currency,
+          interval,
+          cancelAtPeriodEnd: cancel_at_period_end,
+          intervalCount: interval_count,
+          priceId: price_id,
+          createdAt: created_at,
+          periodStartsAt: period_starts_at,
+          periodEndsAt: period_ends_at,
+          trialStartsAt: trial_starts_at,
+          trialEndsAt: trial_ends_at
         )
       `
     )
-    .eq('users_subscriptions.user_id', userId)
+    .eq('user_id', userId)
     .throwOnError()
-    .maybeSingle();
+    .maybeSingle()
 }
 
 /**
@@ -45,9 +48,9 @@ export async function getOrganizationSubscriptionActive(
   client: Client,
   userId: string
 ) {
-  const { data: subscription } = await getUserSubscription(client, userId);
+  const { data } = await getUserSubscription(client, userId);
 
-  const status = subscription?.status;
+  const status = data?.subscription?.status;
 
   if (!status) {
     return false;

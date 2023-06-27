@@ -16,8 +16,8 @@ import {
 import {
   addSubscription,
   deleteSubscription,
-  setUserSubscriptionData,
-  updateSubscriptionById,
+  setCustomerSubscriptionData,
+  updateSubscriptionById
 } from '~/lib/subscriptions/mutations';
 
 import getSupabaseServerClient from '~/core/supabase/server-client';
@@ -131,7 +131,7 @@ async function onCheckoutCompleted(
   // Stripe for every bit of data
   // if you need your DB record to contain further data
   // add it to {@link buildOrganizationSubscription}
-  const { error, data } = await addSubscription(client, subscription);
+  const { error, data } = await addSubscription(client, subscription, userId);
 
   if (error) {
     return Promise.reject(
@@ -141,10 +141,10 @@ async function onCheckoutCompleted(
 
   // finally, we set the subscription data on
   // the user subscriptions join table
-  return setUserSubscriptionData(client, {
-    userId,
+  return setCustomerSubscriptionData(client, {
     customerId,
-    subscriptionId: data.id,
+    userId,
+    subscriptionId: data.id
   });
 }
 
