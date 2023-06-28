@@ -41,7 +41,7 @@ function Footer() {
 
           <div
             className={
-              'flex flex-col space-y-8 lg:space-y-0 lg:space-x-6' +
+              'flex flex-col space-y-8 lg:space-x-6 lg:space-y-0' +
               ' xl:space-x-16 2xl:space-x-20' +
               ' w-full lg:flex-row lg:justify-end'
             }

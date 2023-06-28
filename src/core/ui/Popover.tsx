@@ -42,7 +42,7 @@ const PopoverItem = forwardRef<
     <div
       ref={ref}
       className={classNames(
-        `flex cursor-pointer items-center rounded-md bg-transparent py-2 px-4 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none active:bg-gray-100 dark:hover:bg-black-300 dark:active:bg-black-300`,
+        `flex cursor-pointer items-center rounded-md bg-transparent px-4 py-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none active:bg-gray-100 dark:hover:bg-black-300 dark:active:bg-black-300`,
         className
       )}
       {...props}

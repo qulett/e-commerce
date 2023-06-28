@@ -15,7 +15,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={classNames(
       `flex h-10 w-full items-center justify-between space-x-2.5
-        rounded-md border bg-transparent py-1.5 px-2.5 ring-offset-1 transition-all
+        rounded-md border bg-transparent px-2.5 py-1.5 ring-offset-1 transition-all
         duration-300 placeholder:text-gray-400 hover:bg-gray-50
         focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:cursor-not-allowed
         disabled:opacity-50 dark:border-black-200 dark:bg-black-400
@@ -67,7 +67,7 @@ const SelectLabel = React.forwardRef<
   <SelectPrimitive.Label
     ref={ref}
     className={classNames(
-      'py-1.5 pr-2 pl-2 text-xs font-medium text-gray-400 dark:text-gray-400',
+      'py-1.5 pl-2 pr-2 text-xs font-medium text-gray-400 dark:text-gray-400',
       className
     )}
     {...props}
@@ -113,7 +113,7 @@ const SelectAction = React.forwardRef<
       tabIndex={0}
       role={'button'}
       ref={ref}
-      className={classNames(SelectItemClassName, '!pr-4 !pl-4', className)}
+      className={classNames(SelectItemClassName, '!pl-4 !pr-4', className)}
       {...props}
     >
       {children}

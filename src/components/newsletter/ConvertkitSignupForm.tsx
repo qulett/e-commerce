@@ -13,7 +13,7 @@ const ConvertkitSignupForm: React.FCC<{
       action={action}
       method={'POST'}
       target="_blank"
-      className={`flex w-full flex-col justify-center space-y-2 lg:flex-row lg:space-y-0 lg:space-x-1.5`}
+      className={`flex w-full flex-col justify-center space-y-2 lg:flex-row lg:space-x-1.5 lg:space-y-0`}
     >
       <TextField.Input
         type="email"

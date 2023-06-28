@@ -12,10 +12,13 @@ type Client = SupabaseClient<Database>;
 export async function getUserSubscription(client: Client, userId: string) {
   return client
     .from(CUSTOMERS_SUBSCRIPTIONS_TABLE)
-    .select<string,  {
-      customerId: string;
-      subscription: Maybe<Subscription>;
-    }>(
+    .select<
+      string,
+      {
+        customerId: string;
+        subscription: Maybe<Subscription>;
+      }
+    >(
       `
         customerId: customer_id,
         subscription: subscription_id (
@@ -36,7 +39,7 @@ export async function getUserSubscription(client: Client, userId: string) {
     )
     .eq('user_id', userId)
     .throwOnError()
-    .maybeSingle()
+    .maybeSingle();
 }
 
 /**

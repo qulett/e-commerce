@@ -39,7 +39,7 @@ const NotFoundPage = async () => {
                 </div>
 
                 <p className={'text-gray-500 dark:text-gray-300'}>
-                  Apologies, the page you were looking for was not found"
+                  Apologies, the page you were looking for was not found.
                 </p>
               </div>
 

@@ -29,7 +29,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
     ref={ref}
     className={classNames(
       'flex cursor-default select-none items-center space-x-2.5 rounded-md' +
-        ' justify-between py-1.5 px-2 text-sm font-medium outline-none',
+        ' justify-between px-2 py-1.5 text-sm font-medium outline-none',
       inset && 'pl-8',
       clickable &&
         `cursor-pointer transition-colors focus:bg-primary-50 active:bg-primary-100 dark:focus:bg-black-200 dark:active:bg-black-100`,

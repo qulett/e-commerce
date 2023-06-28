@@ -36,8 +36,8 @@ function PlansStatusAlert({
           <Alert.Heading>The checkout was canceled</Alert.Heading>
 
           <p>
-            The checkout was canceled. Please contact us if you're experiencing
-            any issues
+            The checkout was canceled. Please contact us if you&apos;re
+            experiencing any issues
           </p>
         </Alert>
       );

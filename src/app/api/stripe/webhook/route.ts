@@ -17,7 +17,7 @@ import {
   addSubscription,
   deleteSubscription,
   setCustomerSubscriptionData,
-  updateSubscriptionById
+  updateSubscriptionById,
 } from '~/lib/subscriptions/mutations';
 
 import getSupabaseServerClient from '~/core/supabase/server-client';
@@ -144,7 +144,7 @@ async function onCheckoutCompleted(
   return setCustomerSubscriptionData(client, {
     customerId,
     userId,
-    subscriptionId: data.id
+    subscriptionId: data.id,
   });
 }
 

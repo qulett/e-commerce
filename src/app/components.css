@@ -21,7 +21,7 @@
   .NavigationItem {
     @apply flex items-center justify-center
         rounded-md p-1 text-sm font-medium leading-loose
-        text-gray-600 transition-colors lg:px-2.5 outline-primary-200 dark:outline-primary-500/70;
+        text-gray-600 outline-primary-200 transition-colors dark:outline-primary-500/70 lg:px-2.5;
   }
 
   .NavigationItemActive {
@@ -29,11 +29,11 @@
   }
 
   .PillNavigationMenu .NavigationItemActive {
-    @apply bg-gray-50 text-gray-600 text-current dark:bg-black-300 dark:text-white;
+    @apply bg-gray-50 text-current text-gray-600 dark:bg-black-300 dark:text-white;
   }
 
   .PillNavigationMenu .NavigationItemNotActive {
-    @apply hover:bg-gray-50 active:bg-gray-100 text-gray-500 dark:text-gray-300 dark:hover:bg-black-400 dark:active:bg-black-300;
+    @apply text-gray-500 hover:bg-gray-50 active:bg-gray-100 dark:text-gray-300 dark:hover:bg-black-400 dark:active:bg-black-300;
   }
 
   .SecondaryNavigationMenu .NavigationItemActive {
@@ -49,7 +49,7 @@
   }
 
   .BorderedNavigationMenu .NavigationItemActive {
-    @apply top-[0.55rem] border-b-[0.2rem] rounded-none border-primary-500 bg-transparent pb-[1.05rem] text-current dark:text-white;
+    @apply top-[0.55rem] rounded-none border-b-[0.2rem] border-primary-500 bg-transparent pb-[1.05rem] text-current dark:text-white;
   }
 
   .BorderedNavigationMenu .NavigationItemNotActive {
@@ -98,7 +98,7 @@
 
   .DocumentationSidebarItem {
     @apply flex w-full flex-1 rounded-md
-        py-1.5 px-2 text-sm text-gray-500 transition-colors
+        px-2 py-1.5 text-sm text-gray-500 transition-colors
         duration-300 hover:text-current active:bg-gray-100 dark:text-gray-400 dark:active:bg-black-400;
   }
 
@@ -154,7 +154,7 @@
 
   .Stepper {
     @apply flex flex-col justify-between space-y-2 rounded-md px-2 py-1
-        shadow-sm dark:border-black-400 dark:bg-black-400 lg:space-y-0 lg:space-x-2;
+        shadow-sm dark:border-black-400 dark:bg-black-400 lg:space-x-2 lg:space-y-0;
   }
 
   .StepperDivider {

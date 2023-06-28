@@ -22,7 +22,7 @@ export async function addSubscription(
     .insert({
       ...data,
       id: subscription.id,
-      user_id: userId
+      user_id: userId,
     })
     .select('id')
     .throwOnError()
@@ -77,13 +77,16 @@ export async function setCustomerSubscriptionData(
 
   return client
     .from(CUSTOMERS_SUBSCRIPTIONS_TABLE)
-    .upsert({
-      customer_id: customerId,
-      user_id: userId,
-      subscription_id: subscriptionId,
-    }, {
-      onConflict: 'customer_id',
-    })
+    .upsert(
+      {
+        customer_id: customerId,
+        user_id: userId,
+        subscription_id: subscriptionId,
+      },
+      {
+        onConflict: 'customer_id',
+      }
+    )
     .match({ customer_id: customerId })
     .throwOnError();
 }

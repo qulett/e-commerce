@@ -54,7 +54,7 @@ const EmailOctopusSignupForm: React.FC<
       >
         <TextField.Input
           type="email"
-          className="w-full !rounded-tr-none !rounded-br-none border-r-transparent py-1 text-sm hover:border-r-transparent md:w-80 md:text-base"
+          className="w-full !rounded-br-none !rounded-tr-none border-r-transparent py-1 text-sm hover:border-r-transparent md:w-80 md:text-base"
           name={name}
           aria-label="Your email address"
           placeholder="your@email.com"
@@ -65,7 +65,7 @@ const EmailOctopusSignupForm: React.FC<
           }
         />
 
-        <Button className="rounded-tl-none rounded-bl-none text-sm md:text-base">
+        <Button className="rounded-bl-none rounded-tl-none text-sm md:text-base">
           {children}
         </Button>
       </form>
