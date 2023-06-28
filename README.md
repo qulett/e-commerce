@@ -10,7 +10,7 @@ Organizations and i18n.
 ## Getting Started
 
 This is a quick guide to get you started with the project. For more details,
-please refer to the [documentation](https://makerkit.dev/docs/next-supabase/introduction).
+please refer to the [documentation](https://makerkit.dev/docs/next-supabase-lite/introduction).
 
 ### Requirements
 
@@ -25,7 +25,8 @@ Ensure you have the following installed:
 Clone this repository and name it according to your preferences:
 
 ```
-git clone https://github.com/makerkit/next-supabase-saas-kit.git your-saas --depth=1
+git clone https://github.com/makerkit/next-supabase-saas-kit-lite.git your-saas 
+--depth=1
 ```
 
 Move to the folder just cloned:
@@ -42,7 +43,7 @@ rm -rf .git
 git init
 git add .
 git commit -am "Inital Commit"
-git remote add upstream https://github.com/makerkit/next-supabase-saas-kit
+git remote add upstream https://github.com/makerkit/next-supabase-saas-kit-lite
 ```
 
 We recommend to watch to the repository, so you know when there's an update.
