@@ -1,18 +1,25 @@
-import SiteHeader from '~/app/(site)/components/SiteHeader';
-
 import Button from '~/core/ui/Button';
 import Heading from '~/core/ui/Heading';
 
 import configuration from '~/configuration';
+import loadUserData from '~/lib/server/loaders/load-user-data';
+import SiteHeaderSessionProvider
+  from '~/app/(site)/components/SiteHeaderSessionProvider';
+
+import Fonts from '~/components/Fonts';
 
 export const metadata = {
   title: `Page not found - ${configuration.site.name}`,
 };
 
 const NotFoundPage = async () => {
+  const { session, accessToken } = await loadUserData();
+
   return (
     <main>
-      <SiteHeader />
+      <Fonts />
+
+      <SiteHeaderSessionProvider accessToken={accessToken} data={session} />
 
       <div
         className={
