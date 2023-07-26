@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import useMutation from 'swr/mutation';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { User } from '@supabase/gotrue-js';
 
 import configuration from '~/configuration';
 import useUpdateProfileMutation from '~/lib/user/hooks/use-update-profile';
@@ -12,7 +11,6 @@ import useUpdateProfileMutation from '~/lib/user/hooks/use-update-profile';
 import Button from '~/core/ui/Button';
 import TextField from '~/core/ui/TextField';
 import ImageUploadInput from '~/core/ui/ImageUploadInput';
-import If from '~/core/ui/If';
 
 import Modal from '~/core/ui/Modal';
 import useSupabase from '~/core/hooks/use-supabase';
@@ -24,11 +22,9 @@ import AuthErrorMessage from '~/app/auth/components/AuthErrorMessage';
 function UpdateProfileForm({
   session,
   onUpdateProfileData,
-  onUpdateAuthData,
 }: {
   session: UserSession;
   onUpdateProfileData: (user: Partial<UserData>) => void;
-  onUpdateAuthData: (data: Partial<User>) => void;
 }) {
   const updateProfileMutation = useUpdateProfileMutation();
 
@@ -37,7 +33,6 @@ function UpdateProfileForm({
   const currentDisplayName = session?.data?.displayName ?? '';
 
   const user = session.auth?.user;
-  const currentPhoneNumber = user?.phone ?? '';
   const email = user?.email ?? '';
 
   const { register, handleSubmit, reset, setValue } = useForm({
@@ -157,28 +152,6 @@ function UpdateProfileForm({
                 <span className={'text-xs font-normal'}>Update Email</span>
               </Button>
             </div>
-          </TextField>
-
-          <TextField>
-            <TextField.Label>
-              Phone Number
-              <TextField.Input disabled value={currentPhoneNumber} />
-            </TextField.Label>
-
-            {/* Only show this if phone number is enabled */}
-            <If condition={configuration.auth.providers.phoneNumber}>
-              <div>
-                <If condition={currentPhoneNumber}>
-                  <RemovePhoneNumberButton
-                    onSuccess={() => {
-                      onUpdateAuthData({
-                        phone: undefined,
-                      });
-                    }}
-                  />
-                </If>
-              </div>
-            </If>
           </TextField>
 
           <div>

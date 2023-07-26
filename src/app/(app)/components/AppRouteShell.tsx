@@ -5,7 +5,7 @@ import { Session } from '@supabase/supabase-js';
 
 import useCollapsible from '~/core/hooks/use-sidebar-state';
 import AppSidebar from '~/app/(app)/components/AppSidebar';
-import Toaster from '~/app/(app)/components/Toaster';
+import Toaster from '~/components/Toaster';
 import SentryBrowserWrapper from '~/components/SentryProvider';
 
 import UserData from '~/core/session/types/user-data';
@@ -14,7 +14,7 @@ import UserSession from '~/core/session/types/user-session';
 import CsrfTokenContext from '~/lib/contexts/csrf';
 import SidebarContext from '~/lib/contexts/sidebar';
 import UserSessionContext from '~/core/session/contexts/user-session';
-import AuthChangeListener from '~/app/(app)/components/AuthChangeListener';
+import AuthChangeListener from '~/components/AuthChangeListener';
 import Subscription from '~/lib/subscriptions/subscription';
 
 interface Data {

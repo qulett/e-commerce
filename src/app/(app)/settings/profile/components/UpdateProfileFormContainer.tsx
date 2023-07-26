@@ -7,6 +7,10 @@ import UserSessionContext from '~/core/session/contexts/user-session';
 import useUserSession from '~/core/hooks/use-user-session';
 import UserData from '~/core/session/types/user-data';
 import UpdateProfileForm from './UpdateProfileForm';
+import SettingsTile from '../../components/SettingsTile';
+import UpdatePhoneNumberForm from '../components/UpdatePhoneNumberForm';
+import If from '~/core/ui/If';
+import configuration from '~/configuration';
 
 function UpdateProfileFormContainer() {
   const { userSession, setUserSession } = useContext(UserSessionContext);
@@ -21,8 +25,8 @@ function UpdateProfileFormContainer() {
           ...userSession,
           data: {
             ...userRecordData,
-            ...data,
-          },
+            ...data
+          }
         });
       }
     },
@@ -38,8 +42,8 @@ function UpdateProfileFormContainer() {
           ...userSession,
           auth: {
             ...user,
-            ...data,
-          },
+            ...data
+          }
         });
       }
     },
@@ -51,11 +55,33 @@ function UpdateProfileFormContainer() {
   }
 
   return (
-    <UpdateProfileForm
-      session={session}
-      onUpdateAuthData={onUpdateAuthData}
-      onUpdateProfileData={onUpdateProfileData}
-    />
+    <div className={'flex flex-col space-y-8'}>
+
+
+      <SettingsTile
+        heading={`My Details`}
+        subHeading={`Manage your profile details`}
+      >
+        <UpdateProfileForm
+          session={session}
+          onUpdateProfileData={onUpdateProfileData}
+        />
+      </SettingsTile>
+
+      <If condition={configuration.auth.providers.phoneNumber}>
+        <SettingsTile
+          heading={`My Details`}
+          subHeading={`Manage your profile details`}
+        >
+          <UpdatePhoneNumberForm
+            session={session}
+            onUpdate={(phone) => {
+              onUpdateAuthData({ phone });
+            }}
+          />
+        </SettingsTile>
+      </If>
+    </div>
   );
 }
 
