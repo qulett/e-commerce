@@ -45,6 +45,6 @@ function shouldIgnoreError(error: AuthError) {
 
 function isSmsProviderNotSetupError(error: AuthError) {
   return (
-    error.message === `Error sending sms: sms Provider  could not be found`
+    error.message === `Error sending sms: sms Provider could not be found`
   );
 }

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import SiteHeader from '~/app/(site)/components/SiteHeader';
 import UserSessionContext from '~/core/session/contexts/user-session';
 import UserSession from '~/core/session/types/user-session';
-import AuthChangeListener from '~/app/(app)/components/AuthChangeListener';
+import AuthChangeListener from '~/components/AuthChangeListener';
 
 type Session = {
   auth: UserSession['auth'];
