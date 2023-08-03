@@ -82,7 +82,7 @@ export default RouteShell;
 function RouteShellWithSidebar(
   props: React.PropsWithChildren<{
     collapsed: boolean;
-  }>
+  }>,
 ) {
   const [collapsed, setCollapsed] = useCollapsible(props.collapsed);
 
@@ -93,8 +93,13 @@ function RouteShellWithSidebar(
           <AppSidebar />
         </div>
 
-        <div className={'relative mx-auto h-screen w-full overflow-y-auto'}>
-          <div>{props.children}</div>
+        <div
+          className={
+            'relative mx-auto h-screen w-full overflow-y-auto' +
+            ' flex flex-col flex-1'
+          }
+        >
+          {props.children}
         </div>
       </SidebarContext.Provider>
     </div>
