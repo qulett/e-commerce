@@ -53,10 +53,12 @@ const DarkModeToggle = () => {
     <Select value={currentTheme} onValueChange={setCurrentTheme}>
       <SelectTrigger asChild>
         <IconButton
+          type={'button'}
           data-cy={'dark-mode-toggle'}
           className={
-            'flex items-center !rounded-full border-transparent shadow-sm transition-shadow' +
-            ' !bg-transparent hover:shadow-md'
+            'flex items-center !rounded-full !border-transparent shadow-sm' +
+            ' transition-shadow !bg-transparent' +
+            ' dark:hover:shadow-primary-500 dark:shadow-lg'
           }
         >
           <span hidden>

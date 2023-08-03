@@ -1,6 +1,6 @@
-import Hero from '~/core/ui/Hero';
 import Container from '~/core/ui/Container';
 import SubHeading from '~/core/ui/SubHeading';
+import Heading from '~/core/ui/Heading';
 
 export const metadata = {
   title: 'About',
@@ -11,8 +11,8 @@ const AboutPage = () => {
     <div>
       <Container>
         <div className={'flex flex-col space-y-14'}>
-          <div className={'flex flex-col items-center'}>
-            <Hero>About us</Hero>
+          <div className={'flex flex-col space-y-4 items-center'}>
+            <Heading type={1}>About us</Heading>
 
             <SubHeading>
               We are a team of passionate developers and designers who love to

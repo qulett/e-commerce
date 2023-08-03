@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import classNames from 'classnames';
+import classNames from 'clsx';
 
 import LogoImage from '~/core/ui/Logo/LogoImage';
 import If from '~/core/ui/If';
@@ -24,7 +24,7 @@ export default function PageLoadingIndicator({
         'flex flex-col items-center justify-center space-y-6',
         className,
         {
-          [`fixed left-0 top-0 z-[100] h-screen w-screen bg-white dark:bg-black-500`]:
+          [`fixed left-0 top-0 z-[100] h-screen w-screen bg-white dark:bg-dark-900`]:
             useFullPage,
         }
       )}

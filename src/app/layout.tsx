@@ -1,7 +1,7 @@
 import './globals.css';
 
 import { cookies } from 'next/headers';
-import classNames from 'classnames';
+import classNames from 'clsx';
 
 import ThemeSetter from '~/components/ThemeSetter';
 import Fonts from '~/components/Fonts';
@@ -24,7 +24,8 @@ export default async function RootLayout({
 }
 
 function getClassName() {
-  const theme = cookies().get('theme')?.value;
+  const themeCookie = cookies().get('theme')?.value;
+  const theme = themeCookie ?? configuration.theme;
   const dark = theme === 'dark';
 
   return classNames({

@@ -4,10 +4,10 @@ import { allPosts } from 'contentlayer/generated';
 import PostPreview from '~/app/(site)/blog/components/PostPreview';
 import GridList from '~/app/(site)/components/GridList';
 import Container from '~/core/ui/Container';
-import Hero from '~/core/ui/Hero';
 import SubHeading from '~/core/ui/SubHeading';
 
 import configuration from '~/configuration';
+import Heading from '~/core/ui/Heading';
 
 export const metadata: Metadata = {
   title: `Blog - ${configuration.site.siteName}`,
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 async function BlogPage() {
   return (
     <Container>
-      <div className={'flex flex-col space-y-16'}>
-        <div className={'flex flex-col items-center justify-center'}>
-          <Hero>Blog</Hero>
+      <div className={'flex flex-col space-y-16 my-8'}>
+        <div className={'flex flex-col items-center space-y-4'}>
+          <Heading type={1}>Blog</Heading>
 
           <SubHeading>Tutorials, Guides and Updates from our team</SubHeading>
         </div>

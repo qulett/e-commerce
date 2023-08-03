@@ -12,7 +12,6 @@ import TextField from '~/core/ui/TextField';
 import Modal from '~/core/ui/Modal';
 import If from '~/core/ui/If';
 
-import SlideUpTransition from '~/core/ui/SlideUpTransition';
 import useFactorsMutationKey from '~/core/hooks/use-user-factors-mutation-key';
 import VerificationCodeInput from '~/app/auth/components/VerificationCodeInput';
 
@@ -279,9 +278,7 @@ function FactorNameForm(
 
 function QrImage({ src }: { src: string }) {
   return (
-    <SlideUpTransition>
-      <Image alt={'QR Code'} src={src} width={160} height={160} />
-    </SlideUpTransition>
+    <Image alt={'QR Code'} src={src} width={160} height={160} />
   );
 }
 

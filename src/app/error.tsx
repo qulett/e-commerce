@@ -21,7 +21,12 @@ const ErrorPage = () => {
         }
       >
         <div className={'flex flex-col space-y-8'}>
-          <div className={'flex space-x-8 divide-x divide-gray-100'}>
+          <div
+            className={
+              'flex space-x-8 divide-x divide-gray-100' +
+              ' dark:divide-dark-700'
+            }
+          >
             <div>
               <Heading type={1}>
                 <span className={'text-primary-500'}>500</span>

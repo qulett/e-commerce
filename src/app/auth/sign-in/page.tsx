@@ -14,9 +14,7 @@ function SignInPage() {
   return (
     <>
       <div>
-        <Heading type={6}>
-          <span className={'font-medium'}>Sign In</span>
-        </Heading>
+        <Heading type={5}>Sign In</Heading>
       </div>
 
       <SignInMethodsContainer />

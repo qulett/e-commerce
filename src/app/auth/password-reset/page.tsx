@@ -13,9 +13,7 @@ function PasswordResetPage() {
   return (
     <>
       <div>
-        <Heading type={6}>
-          <span className={'font-medium'}>Reset your Password</span>
-        </Heading>
+        <Heading type={5}>Reset your Password</Heading>
       </div>
 
       <div className={'flex flex-col space-y-4'}>

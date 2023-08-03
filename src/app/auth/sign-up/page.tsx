@@ -15,9 +15,7 @@ function SignUpPage() {
   return (
     <>
       <div>
-        <Heading type={6}>
-          <span className={'font-medium'}>Create an account</span>
-        </Heading>
+        <Heading type={5}>Create an account</Heading>
       </div>
 
       <SignUpMethodsContainer />
