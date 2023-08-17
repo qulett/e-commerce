@@ -11,6 +11,7 @@ import {
   SunIcon,
   ComputerDesktopIcon,
   MoonIcon,
+  BuildingLibraryIcon,
 } from '@heroicons/react/24/outline';
 
 import {
@@ -47,6 +48,8 @@ const ProfileDropdown: React.FCC<{
 
     return displayName ?? email ?? phone;
   }, [userSession]);
+
+  const isAdmin = userSession?.auth?.user.user_metadata.admin === 'true';
 
   return (
     <DropdownMenu>
@@ -92,6 +95,18 @@ const ProfileDropdown: React.FCC<{
         </If>
 
         <DropdownMenuSeparator />
+
+        <If condition={isAdmin}>
+          <DropdownMenuItem asChild>
+            <Link className={'flex items-center space-x-2'} href={'/admin'}>
+              <BuildingLibraryIcon className={'h-5'} />
+
+              <span>Admin</span>
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+        </If>
 
         <DropdownMenuItem
           role={'button'}
