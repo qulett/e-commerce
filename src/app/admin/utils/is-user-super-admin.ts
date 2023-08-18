@@ -1,16 +1,7 @@
 import { cache } from 'react';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import getSupabaseServerClient from '~/core/supabase/server-client';
-
-/**
- * @name SuperAdminRole
- * @description This enum represents the roles of users that can access the
- * super admin by default, we have 1 role = super-admin. You can extend this
- * with other roles you want to assign to your collaborators.
- */
-enum SuperAdminRole {
-  SuperAdmin = 'super-admin',
-}
+import GlobalRole from '~/core/session/types/global-role';
 
 /**
  * @name isUserSuperAdmin
@@ -35,18 +26,18 @@ const isUserSuperAdmin = cache(
 
       // If we enforce MFA, we need to check that the user is MFA authenticated.
       if (params.enforceMfa) {
-        const isMfaAuthenticated = await verifyIsMultiFactorAuthenticated(
-          client,
-        );
+        const isMfaAuthenticated =
+          await verifyIsMultiFactorAuthenticated(client);
 
         if (!isMfaAuthenticated) {
           return false;
         }
       }
 
-      const adminMetadata = data.user?.user_metadata?.role;
+      const adminMetadata = data.user?.user_metadata;
+      const role = adminMetadata?.role;
 
-      return adminMetadata === SuperAdminRole.SuperAdmin;
+      return role === GlobalRole.SuperAdmin;
     } catch (e) {
       return false;
     }
