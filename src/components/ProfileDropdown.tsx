@@ -35,7 +35,9 @@ import {
   LIGHT_THEME_CLASSNAME,
   SYSTEM_THEME_CLASSNAME,
 } from '~/core/theming';
+
 import If from '~/core/ui/If';
+import GlobalRole from '~/core/session/types/global-role';
 
 const ProfileDropdown: React.FCC<{
   userSession: Maybe<UserSession>;
@@ -49,7 +51,8 @@ const ProfileDropdown: React.FCC<{
     return displayName ?? email ?? phone;
   }, [userSession]);
 
-  const isAdmin = userSession?.auth?.user.user_metadata.admin === 'true';
+  const isSuperAdmin =
+    userSession?.auth?.user.user_metadata.role === GlobalRole.SuperAdmin;
 
   return (
     <DropdownMenu>
@@ -96,7 +99,7 @@ const ProfileDropdown: React.FCC<{
 
         <DropdownMenuSeparator />
 
-        <If condition={isAdmin}>
+        <If condition={isSuperAdmin}>
           <DropdownMenuItem asChild>
             <Link className={'flex items-center space-x-2'} href={'/admin'}>
               <BuildingLibraryIcon className={'h-5'} />
