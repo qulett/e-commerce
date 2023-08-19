@@ -31,21 +31,24 @@ export default AdminGuard(AdminPage);
 async function loadData() {
   const client = getSupabaseServerClient({ admin: true });
 
-  const { count: usersCount } = await client.from('users').select('', {
+  const { count: usersCount } = await client.from('users').select('*', {
     count: 'exact',
+    head: true,
   });
 
   const { count: activeSubscriptions } = await client
     .from('subscriptions')
-    .select(``, {
+    .select(`*`, {
       count: 'exact',
+      head: true,
     })
     .eq('status', 'active');
 
   const { count: trialSubscriptions } = await client
     .from('subscriptions')
-    .select(``, {
+    .select(`*`, {
       count: 'exact',
+      head: true,
     })
     .eq('status', 'trialing');
 
