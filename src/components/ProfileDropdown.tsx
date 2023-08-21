@@ -52,7 +52,7 @@ const ProfileDropdown: React.FCC<{
   }, [userSession]);
 
   const isSuperAdmin =
-    userSession?.auth?.user.user_metadata.role === GlobalRole.SuperAdmin;
+    userSession?.auth?.user.app_metadata.role === GlobalRole.SuperAdmin;
 
   return (
     <DropdownMenu>

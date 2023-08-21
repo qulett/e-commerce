@@ -6,7 +6,7 @@ import GlobalRole from '~/core/session/types/global-role';
 /**
  * @name isUserSuperAdmin
  * @description Checks if the current user is an admin by checking the
- * user_metadata.admin field in Supabase Auth is set to true.
+ * app_metadata.role field in Supabase Auth has a SuperAdmin role
  */
 const isUserSuperAdmin = cache(
   async (
@@ -34,7 +34,7 @@ const isUserSuperAdmin = cache(
         }
       }
 
-      const adminMetadata = data.user?.user_metadata;
+      const adminMetadata = data.user?.app_metadata;
       const role = adminMetadata?.role;
 
       return role === GlobalRole.SuperAdmin;
