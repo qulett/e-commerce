@@ -24,7 +24,7 @@ const authPageObject = {
   signUpWithEmailAndPassword(
     email: string,
     password: string,
-    repeatPassword?: string
+    repeatPassword?: string,
   ) {
     cy.wait(100);
 
@@ -64,7 +64,8 @@ const authPageObject = {
       },
     }).as('auth');
 
-    cy.get('@auth')
+    return cy
+      .get('@auth')
       .its('body')
       .then((body) => {
         cy.setCookie(
@@ -74,7 +75,7 @@ const authPageObject = {
             body.refresh_token,
             body.provider_token,
             body.provider_refresh_token,
-          ])
+          ]),
         );
       });
   },
