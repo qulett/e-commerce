@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { cache } from 'react';
 import { redirect } from 'next/navigation';
 
 import {
@@ -20,7 +21,7 @@ import verifyRequiresMfa from '~/core/session/utils/check-requires-mfa';
  * authentication, redirect them to the app home page. Otherwise, continue
  * to the authentication pages.
  */
-const loadAuthPageData = async () => {
+const loadAuthPageData = cache(async () => {
   try {
     const client = getSupabaseServerClient();
 
@@ -46,6 +47,6 @@ const loadAuthPageData = async () => {
 
     return {};
   }
-};
+});
 
 export default loadAuthPageData;

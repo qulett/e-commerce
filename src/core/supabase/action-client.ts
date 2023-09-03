@@ -1,10 +1,17 @@
+import { cache } from 'react';
+import { cookies } from 'next/headers';
+
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { createClient } from '@supabase/supabase-js';
 
-import { cookies } from 'next/headers';
-
 import invariant from 'tiny-invariant';
 import type { Database } from '~/database.types';
+
+const createServerSupabaseClient = cache(() => {
+  const cookieStore = cookies();
+
+  return createServerActionClient<Database>({ cookies: () => cookieStore });
+});
 
 /**
  * @name createServerActionClient
@@ -14,7 +21,7 @@ import type { Database } from '~/database.types';
 function getSupabaseServerActionClient(
   params = {
     admin: false,
-  }
+  },
 ) {
   const env = process.env;
 
@@ -22,7 +29,7 @@ function getSupabaseServerActionClient(
 
   invariant(
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    `Supabase Anon Key not provided`
+    `Supabase Anon Key not provided`,
   );
 
   if (params.admin) {
@@ -37,11 +44,11 @@ function getSupabaseServerActionClient(
         auth: {
           persistSession: false,
         },
-      }
+      },
     );
   }
 
-  return createServerActionClient<Database>({ cookies });
+  return createServerSupabaseClient();
 }
 
 export default getSupabaseServerActionClient;

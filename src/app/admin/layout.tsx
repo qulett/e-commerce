@@ -6,8 +6,6 @@ import isUserSuperAdmin from '~/app/admin/utils/is-user-super-admin';
 import AdminSidebar from '~/app/admin/components/AdminSidebar';
 import AdminProviders from '~/app/admin/components/AdminProviders';
 
-export const dynamic = 'force-dynamic';
-
 function AdminLayout({ children }: React.PropsWithChildren) {
   const isAdmin = use(isUserSuperAdmin());
 

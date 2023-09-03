@@ -1,9 +1,16 @@
+import { cache } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
 import invariant from 'tiny-invariant';
 import type { Database } from '~/database.types';
+
+const createServerSupabaseClient = cache(() => {
+  const cookieStore = cookies();
+
+  return createServerComponentClient<Database>({ cookies: () => cookieStore });
+});
 
 /**
  * @name getSupabaseServerClient
@@ -13,7 +20,7 @@ import type { Database } from '~/database.types';
 function getSupabaseServerClient(
   params = {
     admin: false,
-  }
+  },
 ) {
   const env = process.env;
 
@@ -21,7 +28,7 @@ function getSupabaseServerClient(
 
   invariant(
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    `Supabase Anon Key not provided`
+    `Supabase Anon Key not provided`,
   );
 
   if (params.admin) {
@@ -36,11 +43,11 @@ function getSupabaseServerClient(
         auth: {
           persistSession: false,
         },
-      }
+      },
     );
   }
 
-  return createServerComponentClient<Database>({ cookies });
+  return createServerSupabaseClient();
 }
 
 export default getSupabaseServerClient;
