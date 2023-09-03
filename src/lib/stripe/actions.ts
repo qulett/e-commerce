@@ -15,8 +15,10 @@ import getSupabaseServerClient from '~/core/supabase/server-client';
 
 import configuration from '~/configuration';
 import createBillingPortalSession from '~/lib/stripe/create-billing-portal-session';
+import { withSession } from '~/core/generic/actions-utils';
+import verifyCsrfToken from '~/core/verify-csrf-token';
 
-export async function createCheckoutAction(formData: FormData) {
+export const createCheckoutAction = withSession(async (formData: FormData) => {
   const logger = getLogger();
   const body = Object.fromEntries(formData);
   const bodyResult = await getCheckoutBodySchema().safeParseAsync(body);
@@ -35,7 +37,9 @@ export async function createCheckoutAction(formData: FormData) {
     return redirectToErrorPage(`Invalid request body`);
   }
 
-  const { priceId, customerId, returnUrl } = bodyResult.data;
+  const { priceId, customerId, returnUrl, csrfToken } = bodyResult.data;
+
+  await verifyCsrfToken(csrfToken);
 
   // create the Supabase client
   const client = getSupabaseServerClient();
@@ -49,7 +53,7 @@ export async function createCheckoutAction(formData: FormData) {
   // check if the plan exists in the configuration.
   if (!plan) {
     console.warn(
-      `Plan not found for price ID "${priceId}". Did you forget to add it to the configuration? If the Price ID is incorrect, the checkout will be rejected. Please check the Stripe dashboard`
+      `Plan not found for price ID "${priceId}". Did you forget to add it to the configuration? If the Price ID is incorrect, the checkout will be rejected. Please check the Stripe dashboard`,
     );
   }
 
@@ -76,52 +80,57 @@ export async function createCheckoutAction(formData: FormData) {
 
   // redirect user back based on the response
   return redirect(portalUrl, RedirectType.replace);
-}
+});
 
-export async function createBillingPortalSessionAction(formData: FormData) {
-  const body = Object.fromEntries(formData);
-  const bodyResult = await getBillingPortalBodySchema().safeParseAsync(body);
-  const referrerPath = getApiRefererPath(headers());
+export const createBillingPortalSessionAction = withSession(
+  async (formData: FormData) => {
+    const body = Object.fromEntries(formData);
+    const bodyResult = await getBillingPortalBodySchema().safeParseAsync(body);
+    const referrerPath = getApiRefererPath(headers());
 
-  // Validate the body schema
-  if (!bodyResult.success) {
-    return redirectToErrorPage(referrerPath);
-  }
+    // Validate the body schema
+    if (!bodyResult.success) {
+      return redirectToErrorPage(referrerPath);
+    }
 
-  const { customerId } = bodyResult.data;
+    const { customerId, csrfToken } = bodyResult.data;
 
-  const client = getSupabaseServerClient();
-  const logger = getLogger();
+    await verifyCsrfToken(csrfToken);
 
-  await requireSession(client);
+    const client = getSupabaseServerClient();
+    const logger = getLogger();
 
-  const referer = headers().get('referer');
-  const origin = headers().get('origin');
-  const returnUrl = referer || origin || configuration.paths.appHome;
+    await requireSession(client);
 
-  // get the Stripe Billing Portal session
-  const { url } = await createBillingPortalSession({
-    returnUrl,
-    customerId,
-  }).catch((e) => {
-    logger.error(e, `Stripe Billing Portal redirect error`);
+    const referer = headers().get('referer');
+    const origin = headers().get('origin');
+    const returnUrl = referer || origin || configuration.paths.appHome;
 
-    return redirectToErrorPage(referrerPath);
-  });
+    // get the Stripe Billing Portal session
+    const { url } = await createBillingPortalSession({
+      returnUrl,
+      customerId,
+    }).catch((e) => {
+      logger.error(e, `Stripe Billing Portal redirect error`);
 
-  // redirect to the Stripe Billing Portal
-  return redirect(url, RedirectType.replace);
-}
+      return redirectToErrorPage(referrerPath);
+    });
+
+    // redirect to the Stripe Billing Portal
+    return redirect(url, RedirectType.replace);
+  },
+);
 
 function getBillingPortalBodySchema() {
   return z.object({
     customerId: z.string().min(1),
+    csrfToken: z.string().min(1),
   });
 }
 
 function getCheckoutBodySchema() {
   return z.object({
-    csrf_token: z.string().min(1),
+    csrfToken: z.string().min(1),
     priceId: z.string().min(1),
     customerId: z.string().optional(),
     returnUrl: z.string().min(1),

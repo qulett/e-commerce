@@ -46,13 +46,13 @@ function CheckoutFormData(
   props: React.PropsWithChildren<{
     priceId: Maybe<string>;
     customerId: Maybe<string>;
-  }>
+  }>,
 ) {
   const csrfToken = useCsrfToken();
 
   return (
     <>
-      <input type="hidden" name={'csrf_token'} defaultValue={csrfToken} />
+      <input type="hidden" name={'csrfToken'} defaultValue={csrfToken} />
       <input type="hidden" name={'returnUrl'} defaultValue={getReturnUrl()} />
       <input type="hidden" name={'priceId'} defaultValue={props.priceId} />
 
