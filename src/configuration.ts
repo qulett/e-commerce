@@ -52,13 +52,6 @@ const configuration = {
       password: 'settings/profile/password',
     },
   },
-  email: {
-    host: '',
-    port: 587,
-    user: '',
-    password: '',
-    senderAddress: 'MakerKit Team <info@makerkit.dev>',
-  },
   sentry: {
     dsn: process.env.SENTRY_DSN,
   },
