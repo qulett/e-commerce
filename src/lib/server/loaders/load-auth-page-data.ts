@@ -3,11 +3,6 @@ import 'server-only';
 import { cache } from 'react';
 import { redirect } from 'next/navigation';
 
-import {
-  isRedirectError,
-  getURLFromRedirectError,
-} from 'next/dist/client/components/redirect';
-
 import configuration from '~/configuration';
 
 import getSupabaseServerClient from '~/core/supabase/server-client';
@@ -22,31 +17,25 @@ import verifyRequiresMfa from '~/core/session/utils/check-requires-mfa';
  * to the authentication pages.
  */
 const loadAuthPageData = cache(async () => {
-  try {
-    const client = getSupabaseServerClient();
+  const client = getSupabaseServerClient();
 
-    const {
-      data: { session },
-    } = await client.auth.getSession();
+  const {
+    data: { session },
+  } = await client.auth.getSession();
 
-    const requiresMultiFactorAuthentication = await verifyRequiresMfa(client);
+  const requiresMultiFactorAuthentication = await verifyRequiresMfa(client);
 
-    // If the user is logged in and does not require multi-factor authentication,
-    // redirect them to the home page.
-    if (session && !requiresMultiFactorAuthentication) {
-      return redirect(configuration.paths.appHome);
-    }
+  // If the user is logged in and does not require multi-factor authentication,
+  // redirect them to the home page.
+  if (session && !requiresMultiFactorAuthentication) {
+    console.log(
+      `User is logged in and does not require multi-factor authentication. Redirecting to home page.`,
+    );
 
-    return {};
-  } catch (e) {
-    if (isRedirectError(e)) {
-      return redirect(getURLFromRedirectError(e));
-    }
-
-    console.error(e);
-
-    return {};
+    redirect(configuration.paths.appHome);
   }
+
+  return {};
 });
 
 export default loadAuthPageData;

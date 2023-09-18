@@ -22,8 +22,9 @@ module.exports = {
           ...colors.indigo,
           contrast: '#fff',
         },
-       dark: colors.gray,
+        dark: colors.gray,
       },
     },
   },
+  plugins: [require('tailwindcss-animate')],
 };
