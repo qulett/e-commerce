@@ -24,7 +24,7 @@ function SignInPage() {
           <span>Don&apos;t have an account?</span>
 
           <Link
-            className={'text-primary-800 hover:underline dark:text-primary-500'}
+            className={'text-primary-800 hover:underline dark:text-primary'}
             href={SIGN_UP_PATH}
           >
             Sign up

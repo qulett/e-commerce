@@ -19,7 +19,7 @@ function MultiFactorAuthSetupModal(
   props: React.PropsWithChildren<{
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-  }>
+  }>,
 ) {
   const onEnrollSuccess = useCallback(() => {
     props.setIsOpen(false);
@@ -136,7 +136,6 @@ function MultiFactorAuthSetupForm({
               <Button
                 disabled={!verificationCode}
                 loading={state.loading}
-                variant={'flat'}
                 type={'submit'}
               >
                 {state.loading ? `Verifying...` : `Enable Factor`}
@@ -238,7 +237,7 @@ function FactorNameForm(
   props: React.PropsWithChildren<{
     onSetFactorName: (name: string) => void;
     onCancel: () => void;
-  }>
+  }>,
 ) {
   const inputName = 'factorName';
 
@@ -267,9 +266,7 @@ function FactorNameForm(
         <div className={'flex justify-end space-x-2'}>
           <Modal.CancelButton onClick={props.onCancel} />
 
-          <Button variant={'flat'} type={'submit'}>
-            Set factor name
-          </Button>
+          <Button type={'submit'}>Set factor name</Button>
         </div>
       </div>
     </form>
@@ -277,9 +274,7 @@ function FactorNameForm(
 }
 
 function QrImage({ src }: { src: string }) {
-  return (
-    <Image alt={'QR Code'} src={src} width={160} height={160} />
-  );
+  return <Image alt={'QR Code'} src={src} width={160} height={160} />;
 }
 
 export default MultiFactorAuthSetupModal;
@@ -330,6 +325,6 @@ function useVerifyCodeMutation() {
       }
 
       return verify;
-    }
+    },
   );
 }

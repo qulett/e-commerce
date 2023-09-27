@@ -145,7 +145,7 @@ function UpdateProfileForm({
             <div>
               <Button
                 type={'button'}
-                color={'transparent'}
+                variant={'ghost'}
                 size={'small'}
                 href={configuration.paths.settings.email}
               >
@@ -185,7 +185,7 @@ function getPhotoFile(value: string | null | FileList) {
 async function uploadUserProfilePhoto(
   client: SupabaseClient,
   photoFile: File,
-  userId: string
+  userId: string,
 ) {
   const bytes = await photoFile.arrayBuffer();
   const bucket = client.storage.from('avatars');
@@ -233,7 +233,7 @@ function RemovePhoneNumberButton({
     <>
       <Button
         type={'button'}
-        color={'transparent'}
+        variant={'ghost'}
         size={'small'}
         onClick={() => setIsModalOpen(true)}
       >
@@ -259,9 +259,8 @@ function RemovePhoneNumberButton({
             <Modal.CancelButton onClick={() => setIsModalOpen(false)} />
 
             <Button
-              variant={'flat'}
+              variant={'destructive'}
               loading={unlinkProfileNumberMutation.isMutating}
-              color={'danger'}
               onClick={onUnlinkPhoneNumber}
             >
               Yes, remove phone number

@@ -17,17 +17,18 @@ import {
   SYSTEM_THEME_CLASSNAME,
 } from '~/core/theming';
 
-import IconButton from '~/core/ui/IconButton';
-
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '~/core/ui/Select';
 
 import ClientOnly from '~/core/ui/ClientOnly';
+import Button from '~/core/ui/Button';
 
 const DarkModeToggle = () => {
   const defaultTheme = useMemo(getStoredTheme, []);
@@ -52,13 +53,15 @@ const DarkModeToggle = () => {
   return (
     <Select value={currentTheme} onValueChange={setCurrentTheme}>
       <SelectTrigger asChild>
-        <IconButton
+        <Button
+          variant={'ghost'}
+          size={'icon'}
           type={'button'}
           data-cy={'dark-mode-toggle'}
           className={
             'flex items-center !rounded-full !border-transparent shadow-sm' +
             ' transition-shadow !bg-transparent' +
-            ' dark:hover:shadow-primary-500 dark:shadow-lg'
+            ' dark:hover:shadow-primary/50 dark:shadow-lg'
           }
         >
           <span hidden>
@@ -66,39 +69,42 @@ const DarkModeToggle = () => {
           </span>
 
           <ClientOnly>{Icon}</ClientOnly>
-        </IconButton>
+        </Button>
       </SelectTrigger>
 
       <SelectContent position={'popper'} sideOffset={5}>
-        <SelectItem
-          data-cy={'light-theme-button'}
-          value={LIGHT_THEME_CLASSNAME}
-        >
-          <span className={'flex items-center space-x-2.5'}>
-            <SunIcon className={'h-4'} />
+        <SelectGroup>
+          <SelectLabel>Theme</SelectLabel>
+          <SelectItem
+            data-cy={'light-theme-button'}
+            value={LIGHT_THEME_CLASSNAME}
+          >
+            <span className={'flex items-center space-x-2.5'}>
+              <SunIcon className={'h-4'} />
 
-            <span>Light</span>
-          </span>
-        </SelectItem>
+              <span>Light</span>
+            </span>
+          </SelectItem>
 
-        <SelectItem data-cy={'dark-theme-button'} value={DARK_THEME_CLASSNAME}>
-          <span className={'flex items-center space-x-2.5'}>
-            <MoonIcon className={'h-4'} />
+          <SelectItem data-cy={'dark-theme-button'} value={DARK_THEME_CLASSNAME}>
+            <span className={'flex items-center space-x-2.5'}>
+              <MoonIcon className={'h-4'} />
 
-            <span>Dark</span>
-          </span>
-        </SelectItem>
+              <span>Dark</span>
+            </span>
+          </SelectItem>
 
-        <SelectItem
-          data-cy={'system-theme-button'}
-          value={SYSTEM_THEME_CLASSNAME}
-        >
-          <span className={'flex items-center space-x-2.5'}>
-            <ComputerDesktopIcon className={'h-4'} />
+          <SelectItem
+            data-cy={'system-theme-button'}
+            value={SYSTEM_THEME_CLASSNAME}
+          >
+            <span className={'flex items-center space-x-2.5'}>
+              <ComputerDesktopIcon className={'h-4'} />
 
-            <span>System</span>
-          </span>
-        </SelectItem>
+              <span>System</span>
+            </span>
+          </SelectItem>
+        </SelectGroup>
       </SelectContent>
     </Select>
   );

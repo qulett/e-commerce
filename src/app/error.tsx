@@ -29,7 +29,7 @@ const ErrorPage = () => {
           >
             <div>
               <Heading type={1}>
-                <span className={'text-primary-500'}>500</span>
+                <span className={'text-primary'}>500</span>
               </Heading>
             </div>
 
@@ -46,7 +46,7 @@ const ErrorPage = () => {
               </div>
 
               <div className={'flex space-x-4'}>
-                <Button color={'secondary'} href={'/'}>
+                <Button variant={'secondary'} href={'/'}>
                   Contact us
                 </Button>
 

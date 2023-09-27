@@ -41,7 +41,7 @@ function UpdatePhoneNumberForm({
         return toaster.promise(promise, {
           loading: `Updating phone number...`,
           success: `Phone number successfully updated`,
-          error: `Sorry, we encountered an error while updating your phone number. Please try again`
+          error: `Sorry, we encountered an error while updating your phone number. Please try again`,
         });
       }}
       data-cy={'update-phone-number-form'}
@@ -50,7 +50,6 @@ function UpdatePhoneNumberForm({
         <TextField>
           <TextField.Label>
             Phone number
-
             <TextField.Input
               name={'phoneNumber'}
               defaultValue={currentPhoneNumber}
@@ -72,9 +71,7 @@ function UpdatePhoneNumberForm({
         </TextField>
 
         <div>
-          <Button loading={isMutating}>
-            Update phone number
-          </Button>
+          <Button loading={isMutating}>Update phone number</Button>
         </div>
       </div>
     </form>
@@ -100,7 +97,7 @@ function RemovePhoneNumberButton({
     return toaster.promise(promise, {
       loading: `Removing phone number...`,
       success: `Phone number successfully removed`,
-      error: `Sorry, we encountered an error while removing your phone number. Please try again`
+      error: `Sorry, we encountered an error while removing your phone number. Please try again`,
     });
   }, [trigger, onSuccess]);
 
@@ -108,13 +105,11 @@ function RemovePhoneNumberButton({
     <>
       <Button
         type={'button'}
-        color={'transparent'}
+        variant={'ghost'}
         size={'small'}
         onClick={() => setIsModalOpen(true)}
       >
-        <span className={'text-xs font-normal'}>
-          Remove Phone Number
-        </span>
+        <span className={'text-xs font-normal'}>Remove Phone Number</span>
       </Button>
 
       <Modal
@@ -124,12 +119,11 @@ function RemovePhoneNumberButton({
       >
         <div className={'flex flex-col space-y-2.5 text-sm'}>
           <div>
-            You&apos;re about to remove your phone number. You will not be able to use it to login to your account.
+            You&apos;re about to remove your phone number. You will not be able
+            to use it to login to your account.
           </div>
 
-          <div>
-            Do you want to continue?
-          </div>
+          <div>Do you want to continue?</div>
 
           <AuthErrorMessage error={error} />
 
@@ -137,9 +131,8 @@ function RemovePhoneNumberButton({
             <Modal.CancelButton onClick={() => setIsModalOpen(false)} />
 
             <Button
-              variant={'flat'}
               loading={isMutating}
-              color={'danger'}
+              variant={'destructive'}
               onClick={onUnlinkPhoneNumber}
             >
               Yes, remove phone number

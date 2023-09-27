@@ -119,7 +119,7 @@ function MultiFactorAuthFactorsList({
 function SetupMfaButton(
   props: React.PropsWithChildren<{
     onClick: () => void;
-  }>
+  }>,
 ) {
   return (
     <div>
@@ -132,7 +132,7 @@ function ConfirmUnenrollFactorModal(
   props: React.PropsWithChildren<{
     factorId: string;
     setIsModalOpen: (isOpen: boolean) => void;
-  }>
+  }>,
 ) {
   const unEnroll = useUnenrollFactor();
 
@@ -150,7 +150,7 @@ function ConfirmUnenrollFactorModal(
 
       props.setIsModalOpen(false);
     },
-    [props, unEnroll]
+    [props, unEnroll],
   );
 
   return (
@@ -173,8 +173,7 @@ function ConfirmUnenrollFactorModal(
 
           <Button
             loading={unEnroll.isMutating}
-            color={'danger'}
-            variant={'flat'}
+            variant={'destructive'}
             onClick={() => onUnenrollRequested(props.factorId)}
           >
             Yes, unenroll factor
