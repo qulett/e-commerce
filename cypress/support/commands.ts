@@ -67,8 +67,14 @@ export function registerCypressCommands() {
     cy.request(`POST`, `/auth/sign-out`);
   });
 
-  Cypress.on('uncaught:exception', (err) => {
-    if (err.message.includes('NEXT_REDIRECT')) {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
+    const isResizeObserverLoopErr = resizeObserverLoopErrRe.test(err.message);
+    const isNextRedirect = err.message.includes('NEXT_REDIRECT');
+    const skipErrs = [isResizeObserverLoopErr, isNextRedirect];
+    const shouldSkipErr = skipErrs.some(Boolean);
+
+    if (shouldSkipErr) {
       return false;
     }
   });

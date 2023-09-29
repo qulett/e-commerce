@@ -12,6 +12,7 @@ import {
   ComputerDesktopIcon,
   MoonIcon,
   BuildingLibraryIcon,
+  CheckCircleIcon,
 } from '@heroicons/react/24/outline';
 
 import {
@@ -34,6 +35,7 @@ import {
   DARK_THEME_CLASSNAME,
   LIGHT_THEME_CLASSNAME,
   SYSTEM_THEME_CLASSNAME,
+  getStoredTheme,
 } from '~/core/theming';
 
 import If from '~/core/ui/If';
@@ -128,6 +130,8 @@ const ProfileDropdown: React.FCC<{
 };
 
 function ThemeSelectorSubMenu() {
+  const currentTheme = useMemo(() => getStoredTheme(), []);
+
   const Wrapper: React.FCC = ({ children }) => (
     <span className={'flex items-center space-x-2.5'}>{children}</span>
   );
@@ -147,7 +151,7 @@ function ThemeSelectorSubMenu() {
 
         <DropdownMenuSubContent>
           <DropdownMenuItem
-            className={'cursor-pointer'}
+            className={'cursor-pointer flex justify-between items-center'}
             onClick={() => setTheme(LIGHT_THEME_CLASSNAME)}
           >
             <Wrapper>
@@ -155,10 +159,14 @@ function ThemeSelectorSubMenu() {
 
               <span>Light</span>
             </Wrapper>
+
+            <If condition={currentTheme === LIGHT_THEME_CLASSNAME}>
+              <CheckCircleIcon className={'h-5'} />
+            </If>
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className={'cursor-pointer'}
+            className={'cursor-pointer flex justify-between items-center'}
             onClick={() => setTheme(DARK_THEME_CLASSNAME)}
           >
             <Wrapper>
@@ -166,10 +174,14 @@ function ThemeSelectorSubMenu() {
 
               <span>Dark</span>
             </Wrapper>
+
+            <If condition={currentTheme === DARK_THEME_CLASSNAME}>
+              <CheckCircleIcon className={'h-5'} />
+            </If>
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className={'cursor-pointer'}
+            className={'cursor-pointer flex justify-between items-center'}
             onClick={() => setTheme(SYSTEM_THEME_CLASSNAME)}
           >
             <Wrapper>
@@ -177,6 +189,10 @@ function ThemeSelectorSubMenu() {
 
               <span>System</span>
             </Wrapper>
+
+            <If condition={currentTheme === SYSTEM_THEME_CLASSNAME}>
+              <CheckCircleIcon className={'h-5'} />
+            </If>
           </DropdownMenuItem>
         </DropdownMenuSubContent>
       </DropdownMenuSub>
