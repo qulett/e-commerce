@@ -10,6 +10,8 @@ import React, {
   useState,
 } from 'react';
 
+import Image from 'next/image';
+
 import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import Label from '~/core/ui/Label';
@@ -119,8 +121,7 @@ const ImageUploadInput = forwardRef<React.ElementRef<'input'>, Props>(
             </If>
 
             <If condition={state.image}>
-              <img
-                loading={'lazy'}
+              <Image
                 style={{
                   width: IMAGE_SIZE,
                   height: IMAGE_SIZE,
