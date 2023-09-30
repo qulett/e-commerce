@@ -3,8 +3,7 @@ import Heading from '~/core/ui/Heading';
 
 import configuration from '~/configuration';
 import loadUserData from '~/lib/server/loaders/load-user-data';
-import SiteHeaderSessionProvider
-  from '~/app/(site)/components/SiteHeaderSessionProvider';
+import SiteHeaderSessionProvider from '~/app/(site)/components/SiteHeaderSessionProvider';
 
 import Fonts from '~/components/Fonts';
 
@@ -13,13 +12,13 @@ export const metadata = {
 };
 
 const NotFoundPage = async () => {
-  const { session, accessToken } = await loadUserData();
+  const { session } = await loadUserData();
 
   return (
     <main>
       <Fonts />
 
-      <SiteHeaderSessionProvider accessToken={accessToken} data={session} />
+      <SiteHeaderSessionProvider data={session} />
 
       <div
         className={

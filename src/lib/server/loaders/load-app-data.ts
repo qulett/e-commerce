@@ -52,7 +52,14 @@ const loadAppData = cache(async () => {
     return {
       accessToken,
       csrfToken,
-      session,
+      auth: {
+        accessToken: session.access_token,
+        user: {
+          id: session.user.id,
+          email: session.user.email,
+          phone: session.user.phone,
+        },
+      },
       subscription: subscription,
       customerId,
       user: userRecord,
@@ -74,7 +81,7 @@ const loadAppData = cache(async () => {
       {
         error: JSON.stringify(error),
       },
-      `Could not load application data`
+      `Could not load application data`,
     );
 
     // in case of any error, we redirect the user to the home page

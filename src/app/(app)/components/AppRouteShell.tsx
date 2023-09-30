@@ -1,41 +1,25 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Session } from '@supabase/supabase-js';
 
 import useCollapsible from '~/core/hooks/use-sidebar-state';
 import AppSidebar from '~/app/(app)/components/AppSidebar';
 import Toaster from '~/components/Toaster';
 import SentryBrowserWrapper from '~/components/SentryProvider';
-
-import UserData from '~/core/session/types/user-data';
 import UserSession from '~/core/session/types/user-session';
 
 import CsrfTokenContext from '~/lib/contexts/csrf';
 import SidebarContext from '~/lib/contexts/sidebar';
 import UserSessionContext from '~/core/session/contexts/user-session';
 import AuthChangeListener from '~/components/AuthChangeListener';
-import Subscription from '~/lib/subscriptions/subscription';
-
-interface Data {
-  accessToken: Maybe<string>;
-  csrfToken: string | null;
-  session: Session;
-  user: UserData | null;
-  subscription: Maybe<Subscription>;
-  customerId: Maybe<string>;
-  ui: {
-    sidebarState?: string;
-    theme?: string;
-  };
-}
+import type loadAppData from '~/lib/server/loaders/load-app-data';
 
 const RouteShell: React.FCC<{
-  data: Data;
+  data: Awaited<ReturnType<typeof loadAppData>>;
 }> = ({ data, children }) => {
   const userSessionContext: UserSession = useMemo(() => {
     return {
-      auth: data.session,
+      auth: data.auth,
       subscription: data.subscription,
       customerId: data.customerId,
       data: data.user ?? undefined,
@@ -58,7 +42,7 @@ const RouteShell: React.FCC<{
       <UserSessionContext.Provider value={{ userSession, setUserSession }}>
         <CsrfTokenContext.Provider value={data.csrfToken}>
           <AuthChangeListener
-            accessToken={data.accessToken}
+            accessToken={data.auth?.accessToken}
             whenSignedOut={'/'}
           >
             <main>

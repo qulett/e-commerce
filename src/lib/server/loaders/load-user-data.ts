@@ -18,16 +18,23 @@ async function loadUserData() {
       return emptyUserData();
     }
 
-    const userId = data.session.user.id;
+    const session = data.session;
+    const userId = session.user.id;
     const userData = await getUserDataById(client, userId);
-    const accessToken = data.session.access_token;
+    const accessToken = session.access_token;
 
     return {
       accessToken,
       session: {
-        auth: data.session,
+        auth: {
+          accessToken: session.access_token,
+          user: {
+            id: session.user.id,
+            email: session.user.email,
+            phone: session.user.phone,
+          },
+        },
         data: userData || undefined,
-        role: undefined,
       },
     };
   } catch (e) {
