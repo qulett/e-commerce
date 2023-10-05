@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import toaster from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import useMutation from 'swr/mutation';
 
@@ -81,7 +81,7 @@ function UpdateProfileForm({
       onUpdateProfileData(info);
     });
 
-    return toaster.promise(promise, {
+    return toast.promise(promise, {
       success: 'Profile successfully updated',
       error: `Encountered an error. Please try again`,
       loading: `Updating profile...`,
@@ -222,7 +222,7 @@ function RemovePhoneNumberButton({
       onSuccess();
     });
 
-    return toaster.promise(promise, {
+    return toast.promise(promise, {
       loading: `Unlinking account...`,
       success: `Account successfully unlinked`,
       error: `Sorry, we couldn't unlink this account`,
@@ -259,6 +259,7 @@ function RemovePhoneNumberButton({
             <Modal.CancelButton onClick={() => setIsModalOpen(false)} />
 
             <Button
+              type={'button'}
               variant={'destructive'}
               loading={unlinkProfileNumberMutation.isMutating}
               onClick={onUnlinkPhoneNumber}

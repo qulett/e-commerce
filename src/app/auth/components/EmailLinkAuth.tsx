@@ -2,7 +2,7 @@
 
 import type { FormEventHandler } from 'react';
 import { useCallback } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 import TextField from '~/core/ui/TextField';
 import Button from '~/core/ui/Button';
@@ -39,7 +39,7 @@ const EmailLinkAuth: React.FC = () => {
           again`,
       });
     },
-    [signInWithOtpMutation]
+    [signInWithOtpMutation],
   );
 
   if (signInWithOtpMutation.data) {

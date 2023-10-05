@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import useMutation from 'swr/mutation';
-import toaster from 'react-hot-toast';
+import { toast } from 'sonner';
 
 import UserSession from '~/core/session/types/user-session';
 import TextField from '~/core/ui/TextField';
@@ -38,7 +38,7 @@ function UpdatePhoneNumberForm({
 
         const promise = trigger(phoneNumber);
 
-        return toaster.promise(promise, {
+        return toast.promise(promise, {
           loading: `Updating phone number...`,
           success: `Phone number successfully updated`,
           error: `Sorry, we encountered an error while updating your phone number. Please try again`,
@@ -94,7 +94,7 @@ function RemovePhoneNumberButton({
       onSuccess();
     });
 
-    return toaster.promise(promise, {
+    return toast.promise(promise, {
       loading: `Removing phone number...`,
       success: `Phone number successfully removed`,
       error: `Sorry, we encountered an error while removing your phone number. Please try again`,
@@ -131,6 +131,7 @@ function RemovePhoneNumberButton({
             <Modal.CancelButton onClick={() => setIsModalOpen(false)} />
 
             <Button
+              type={'button'}
               loading={isMutating}
               variant={'destructive'}
               onClick={onUnlinkPhoneNumber}

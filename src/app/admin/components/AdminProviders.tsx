@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
 import SidebarContext from '~/lib/contexts/sidebar';
 import CsrfTokenContext from '~/lib/contexts/csrf';
+import Toaster from '~/components/Toaster';
 
 function AdminProviders(
   props: React.PropsWithChildren<{

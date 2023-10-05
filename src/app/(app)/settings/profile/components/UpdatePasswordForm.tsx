@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from 'react';
 import type { User } from '@supabase/gotrue-js';
 
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 
 import useUpdateUserMutation from '~/core/hooks/use-update-user-mutation';
@@ -73,7 +73,7 @@ const UpdatePasswordForm: React.FCC<{ user: User }> = ({ user }) => {
         loading: `Updating password...`,
       });
     },
-    [updateUserMutation]
+    [updateUserMutation],
   );
 
   const updatePasswordCallback = useCallback(
@@ -84,7 +84,7 @@ const UpdatePasswordForm: React.FCC<{ user: User }> = ({ user }) => {
       // don't have an email/password factor linked, and the UI is out of sync
       if (!email) {
         return Promise.reject(
-          `You cannot update your password because your account is not linked to any.`
+          `You cannot update your password because your account is not linked to any.`,
         );
       }
 
@@ -94,7 +94,7 @@ const UpdatePasswordForm: React.FCC<{ user: User }> = ({ user }) => {
         return Promise.reject(e);
       }
     },
-    [updatePasswordFromCredential]
+    [updatePasswordFromCredential],
   );
 
   const onSubmit = useCallback(
@@ -103,7 +103,7 @@ const UpdatePasswordForm: React.FCC<{ user: User }> = ({ user }) => {
 
       return updatePasswordCallback(user, currentPassword, newPassword);
     },
-    [user, updatePasswordCallback]
+    [user, updatePasswordCallback],
   );
 
   // reset form on success

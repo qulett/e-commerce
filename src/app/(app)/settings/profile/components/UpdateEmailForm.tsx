@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import type { User } from '@supabase/gotrue-js';
 
@@ -35,7 +35,7 @@ const UpdateEmailForm: React.FC<{ user: User }> = ({ user }) => {
         },
       });
     },
-    [updateUserMutation]
+    [updateUserMutation],
   );
 
   const currentEmail = user?.email as string;
@@ -53,7 +53,7 @@ const UpdateEmailForm: React.FC<{ user: User }> = ({ user }) => {
 
       if (email !== repeatEmail) {
         return toast.error(
-          `Emails do not match. Make sure you're using the correct email`
+          `Emails do not match. Make sure you're using the correct email`,
         );
       }
 
@@ -64,7 +64,7 @@ const UpdateEmailForm: React.FC<{ user: User }> = ({ user }) => {
       // otherwise, go ahead and update the email
       return await updateEmail(email);
     },
-    [currentEmail, updateEmail]
+    [currentEmail, updateEmail],
   );
 
   const emailControl = register('email', {

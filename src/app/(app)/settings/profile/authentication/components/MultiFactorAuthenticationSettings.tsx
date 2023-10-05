@@ -11,7 +11,7 @@ import Spinner from '~/core/ui/Spinner';
 import Alert from '~/core/ui/Alert';
 import If from '~/core/ui/If';
 import Button from '~/core/ui/Button';
-import toaster from 'react-hot-toast';
+import { toast } from 'sonner';
 import Modal from '~/core/ui/Modal';
 import Badge from '~/core/ui/Badge';
 import IconButton from '~/core/ui/IconButton';
@@ -140,15 +140,15 @@ function ConfirmUnenrollFactorModal(
     async (factorId: string) => {
       if (unEnroll.isMutating) return;
 
-      const promise = unEnroll.trigger(factorId);
+      const promise = unEnroll.trigger(factorId).then(() => {
+        props.setIsModalOpen(false);
+      });
 
-      await toaster.promise(promise, {
+      toast.promise(promise, {
         loading: `Unenrolling factor...`,
         success: `Factor successfully unenrolled`,
         error: `Unenrolling factor failed`,
       });
-
-      props.setIsModalOpen(false);
     },
     [props, unEnroll],
   );
@@ -172,6 +172,7 @@ function ConfirmUnenrollFactorModal(
           />
 
           <Button
+            type={'button'}
             loading={unEnroll.isMutating}
             variant={'destructive'}
             onClick={() => onUnenrollRequested(props.factorId)}
