@@ -191,7 +191,7 @@ function generateDemoData() {
 
     data.push({
       name: formatter.format(date) as string,
-      value: (Math.random() * 1000).toFixed(1),
+      value: (Math.random() * 10).toFixed(1),
     });
   }
 
@@ -199,7 +199,7 @@ function generateDemoData() {
 }
 
 function Chart(
-  props: React.PropsWithChildren<{ data: { value: string; name: string }[] }>
+  props: React.PropsWithChildren<{ data: { value: string; name: string }[] }>,
 ) {
   return (
     <div className={'h-36'}>

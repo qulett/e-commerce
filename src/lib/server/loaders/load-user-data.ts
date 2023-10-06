@@ -21,10 +21,8 @@ async function loadUserData() {
     const session = data.session;
     const userId = session.user.id;
     const userData = await getUserDataById(client, userId);
-    const accessToken = session.access_token;
 
     return {
-      accessToken,
       session: {
         auth: {
           accessToken: session.access_token,

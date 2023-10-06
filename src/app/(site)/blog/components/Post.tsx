@@ -1,5 +1,5 @@
 import React from 'react';
-import { Post } from 'contentlayer/generated';
+import type { Post } from 'contentlayer/generated';
 
 import PostHeader from './PostHeader';
 import MDXRenderer from '~/core/ui/MDXRenderer/MDXRenderer';

@@ -1,6 +1,6 @@
 import Footer from './components/Footer';
-import loadUserData from '~/lib/server/loaders/load-user-data';
 import SiteHeaderSessionProvider from './components/SiteHeaderSessionProvider';
+import loadUserData from '~/lib/server/loaders/load-user-data';
 
 async function SiteLayout(props: React.PropsWithChildren) {
   const data = await loadUserData();

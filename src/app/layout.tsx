@@ -8,7 +8,7 @@ import Fonts from '~/components/Fonts';
 
 import configuration from '~/configuration';
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;

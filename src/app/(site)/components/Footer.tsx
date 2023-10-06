@@ -48,7 +48,7 @@ function Footer() {
           >
             <div>
               <div className={'flex flex-col space-y-4'}>
-                <Heading type={6}>About</Heading>
+                <span className={'font-medium'}>About</span>
 
                 <FooterSectionList>
                   <FooterLink>
@@ -66,7 +66,7 @@ function Footer() {
 
             <div>
               <div className={'flex flex-col space-y-4'}>
-                <Heading type={6}>Product</Heading>
+                <span className={'font-medium'}>Product</span>
 
                 <FooterSectionList>
                   <FooterLink>
@@ -84,7 +84,7 @@ function Footer() {
 
             <div>
               <div className={'flex flex-col space-y-4'}>
-                <Heading type={6}>Legal</Heading>
+                <span className={'font-medium'}>Legal</span>
 
                 <FooterSectionList>
                   <FooterLink>

@@ -35,9 +35,9 @@ const NavigationMenuItem: React.FCC<{
   const className = classNames(itemClassName, props.className);
 
   return (
-    <Link className={className} href={link.path}>
-      {label}
-    </Link>
+    <li className={className}>
+      <Link href={link.path}>{label}</Link>
+    </li>
   );
 };
 
@@ -46,7 +46,7 @@ export default NavigationMenuItem;
 function getNavigationMenuItemClassBuilder() {
   return cva(
     [
-      `p-1 lg:px-2.5 flex items-center justify-center font-medium lg:justify-start rounded-md text-sm transition-colors active:[&>*]:translate-y-[2px]`,
+      `p-1 lg:px-2.5 flex items-center justify-center font-medium lg:justify-start rounded-md text-sm transition colors transform active:translate-y-[2px]`,
     ],
     {
       compoundVariants: [
@@ -77,7 +77,7 @@ function getNavigationMenuItemClassBuilder() {
         {
           active: false,
           bordered: true,
-          className: `hover:bg-gray-50 active:bg-gray-100 dark:active:bg-dark-800 dark:hover:bg-dark/90 transition-colors rounded-lg border-transparent`,
+          className: `hover:bg-gray-50 active:bg-gray-100 dark:active:bg-dark-800 dark:hover:bg-dark/90 rounded-lg border-transparent`,
         },
         // active - bordered
         {

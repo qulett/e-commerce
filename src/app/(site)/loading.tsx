@@ -1,8 +1,12 @@
 import GlobalLoadingIndicator from '~/components/GlobalLoadingIndicator';
+import TopLoadingBarIndicator from '~/components/TopLoadingBarIndicator';
 
 function Loading() {
   return (
-    <GlobalLoadingIndicator>Loading. Please wait...</GlobalLoadingIndicator>
+    <>
+      <TopLoadingBarIndicator />
+      <GlobalLoadingIndicator fullPage />
+    </>
   );
 }
 
