@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useContext } from 'react';
-import type { User } from '@supabase/gotrue-js';
 
 import UserSessionContext from '~/core/session/contexts/user-session';
 import useUserSession from '~/core/hooks/use-user-session';
@@ -10,6 +9,9 @@ import UpdateProfileForm from './UpdateProfileForm';
 import SettingsTile from '../../components/SettingsTile';
 import UpdatePhoneNumberForm from '../components/UpdatePhoneNumberForm';
 import If from '~/core/ui/If';
+
+import { refreshSessionAction } from '../actions';
+
 import configuration from '~/configuration';
 
 function UpdateProfileFormContainer() {
@@ -25,29 +27,12 @@ function UpdateProfileFormContainer() {
           ...userSession,
           data: {
             ...userRecordData,
-            ...data
-          }
+            ...data,
+          },
         });
       }
     },
-    [setUserSession, userSession]
-  );
-
-  const onUpdateAuthData = useCallback(
-    (data: Partial<User>) => {
-      const user = userSession?.auth;
-
-      if (user) {
-        setUserSession({
-          ...userSession,
-          auth: {
-            ...user,
-            ...data
-          }
-        });
-      }
-    },
-    [setUserSession, userSession]
+    [setUserSession, userSession],
   );
 
   if (!session) {
@@ -56,8 +41,6 @@ function UpdateProfileFormContainer() {
 
   return (
     <div className={'flex flex-col space-y-8'}>
-
-
       <SettingsTile
         heading={`My Details`}
         subHeading={`Manage your profile details`}
@@ -75,8 +58,8 @@ function UpdateProfileFormContainer() {
         >
           <UpdatePhoneNumberForm
             session={session}
-            onUpdate={(phone) => {
-              onUpdateAuthData({ phone });
+            onUpdate={async () => {
+              await refreshSessionAction();
             }}
           />
         </SettingsTile>

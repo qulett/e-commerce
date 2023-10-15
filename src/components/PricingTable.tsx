@@ -76,7 +76,7 @@ function PricingTable(
           return (
             <PricingItem
               selectable
-              key={plan.name}
+              key={plan.name + product.name}
               plan={plan}
               product={product}
               CheckoutButton={props.CheckoutButton}
