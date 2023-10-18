@@ -1,4 +1,6 @@
 import type { Provider } from '@supabase/gotrue-js/src/lib/types';
+import { StripeCheckoutDisplayMode } from '~/lib/stripe/types';
+import invariant from 'tiny-invariant';
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -55,6 +57,8 @@ const configuration = {
     dsn: process.env.SENTRY_DSN,
   },
   stripe: {
+    embedded: true,
+    displayMode: StripeCheckoutDisplayMode.Popup,
     products: [
       {
         name: 'Basic',
@@ -70,7 +74,7 @@ const configuration = {
           {
             name: 'Monthly',
             price: '$9',
-            stripePriceId: 'price_1LfXGaI1i3VnbZTq7l3VgZNa',
+            stripePriceId: 'price_1NNwYHI1i3VnbZTqI2UzaHIe',
           },
           {
             name: 'Yearly',
@@ -128,3 +132,14 @@ const configuration = {
 };
 
 export default configuration;
+
+// Validate Stripe configuration
+// as this is a new requirement, we throw an error if the key is not defined
+// in the environment
+invariant(
+  configuration.stripe.embedded && production
+    ? process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    : true,
+  'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined. Please add it to your' +
+    ' environment variables.',
+);

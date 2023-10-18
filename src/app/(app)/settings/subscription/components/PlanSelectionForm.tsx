@@ -1,26 +1,54 @@
 'use client';
 
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
+
 import If from '~/core/ui/If';
 import PricingTable from '~/components/PricingTable';
-import CheckoutRedirectButton from '~/app/(app)/settings/subscription/components/CheckoutRedirectButton';
-import BillingPortalRedirectButton from '~/app/(app)/settings/subscription/components/BillingRedirectButton';
+import CheckoutRedirectButton from '../components/CheckoutRedirectButton';
+import BillingPortalRedirectButton from '../components/BillingRedirectButton';
+import Button from '~/core/ui/Button';
+import ErrorBoundary from '~/core/ui/ErrorBoundary';
+
+const EmbeddedStripeCheckout = dynamic(
+  () => import('./EmbeddedStripeCheckout'),
+  {
+    ssr: false,
+  },
+);
 
 const PlanSelectionForm: React.FCC<{
   customerId: Maybe<string>;
 }> = ({ customerId }) => {
+  const [clientSecret, setClientSecret] = useState<string>();
+  const [retry, setRetry] = useState(0);
+
   return (
     <div className={'flex flex-col space-y-6'}>
       <div className={'flex w-full flex-col space-y-8'}>
+        <If condition={clientSecret}>
+          <EmbeddedStripeCheckout clientSecret={clientSecret as string} />
+        </If>
+
         <PricingTable
           CheckoutButton={(props) => {
             return (
-              <CheckoutRedirectButton
-                customerId={customerId}
-                stripePriceId={props.stripePriceId}
-                recommended={props.recommended}
+              <ErrorBoundary
+                fallback={
+                  <CheckoutErrorMessage
+                    onRetry={() => setRetry((retry) => retry + 1)}
+                  />
+                }
               >
-                Checkout
-              </CheckoutRedirectButton>
+                <CheckoutRedirectButton
+                  customerId={customerId}
+                  stripePriceId={props.stripePriceId}
+                  recommended={props.recommended}
+                  onCheckoutCreated={setClientSecret}
+                >
+                  Checkout
+                </CheckoutRedirectButton>
+              </ErrorBoundary>
             );
           }}
         />
@@ -42,3 +70,17 @@ const PlanSelectionForm: React.FCC<{
 };
 
 export default PlanSelectionForm;
+
+function CheckoutErrorMessage({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className={'flex flex-col space-y-2'}>
+      <span className={'text-red-500 text-sm font-medium'}>
+        Sorry, we were unable to load the checkout form. Please try again.
+      </span>
+
+      <Button onClick={onRetry} variant={'ghost'}>
+        Retry
+      </Button>
+    </div>
+  );
+}

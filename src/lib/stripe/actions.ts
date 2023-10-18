@@ -18,75 +18,114 @@ import createBillingPortalSession from '~/lib/stripe/create-billing-portal-sessi
 import { withSession } from '~/core/generic/actions-utils';
 import verifyCsrfToken from '~/core/verify-csrf-token';
 
-export const createCheckoutAction = withSession(async (formData: FormData) => {
-  const logger = getLogger();
-  const body = Object.fromEntries(formData);
-  const bodyResult = await getCheckoutBodySchema().safeParseAsync(body);
+export const createCheckoutAction = withSession(
+  async (_, formData: FormData) => {
+    const logger = getLogger();
+    const body = Object.fromEntries(formData);
+    const bodyResult = await getCheckoutBodySchema().safeParseAsync(body);
 
-  const redirectToErrorPage = (error?: string) => {
-    const referer = getApiRefererPath(headers());
-    const url = join(referer, `?error=true`);
+    const redirectToErrorPage = (error?: string) => {
+      const referer = getApiRefererPath(headers());
+      const url = join(referer, `?error=true`);
 
-    logger.error({ error }, `Could not create Stripe Checkout session`);
+      logger.error({ error }, `Could not create Stripe Checkout session`);
 
-    return redirect(url);
-  };
+      return redirect(url);
+    };
 
-  // Validate the body schema
-  if (!bodyResult.success) {
-    return redirectToErrorPage(`Invalid request body`);
-  }
+    // Validate the body schema
+    if (!bodyResult.success) {
+      return redirectToErrorPage(`Invalid request body`);
+    }
 
-  const { priceId, customerId, returnUrl, csrfToken } = bodyResult.data;
+    const { priceId, customerId, returnUrl, csrfToken } = bodyResult.data;
 
-  await verifyCsrfToken(csrfToken);
+    await verifyCsrfToken(csrfToken);
 
-  // create the Supabase client
-  const client = getSupabaseServerClient();
+    // create the Supabase client
+    const client = getSupabaseServerClient();
 
-  // require the user to be logged in
-  const sessionResult = await requireSession(client);
-  const userId = sessionResult.user.id;
-  const customerEmail = sessionResult.user.email;
+    // require the user to be logged in
+    const sessionResult = await requireSession(client);
+    const userId = sessionResult.user.id;
+    const customerEmail = sessionResult.user.email;
 
-  const plan = getPlanByPriceId(priceId);
+    const plan = getPlanByPriceId(priceId);
 
-  // check if the plan exists in the configuration.
-  if (!plan) {
-    console.warn(
-      `Plan not found for price ID "${priceId}". Did you forget to add it to the configuration? If the Price ID is incorrect, the checkout will be rejected. Please check the Stripe dashboard`,
+    // check if the plan exists in the configuration.
+    if (!plan) {
+      console.warn(
+        `Plan not found for price ID "${priceId}". Did you forget to add it to the configuration? If the Price ID is incorrect, the checkout will be rejected. Please check the Stripe dashboard`,
+      );
+    }
+
+    const trialPeriodDays =
+      plan && 'trialPeriodDays' in plan
+        ? (plan.trialPeriodDays as number)
+        : undefined;
+
+    const embedded = configuration.stripe.embedded;
+
+    // create the Stripe Checkout session
+    const session = await createStripeCheckout({
+      returnUrl,
+      userId,
+      priceId,
+      customerId,
+      trialPeriodDays,
+      customerEmail,
+      embedded,
+    }).catch((e) => {
+      logger.error(e, `Stripe Checkout error`);
+    });
+
+    // check if the response is valid (i.e. it contains the URL)
+    // if not, redirect to the error page
+    if (!session) {
+      return redirectToErrorPage(`An unexpected error occurred`);
+    }
+
+    logger.info(
+      {
+        id: session.id,
+        userId,
+      },
+      `Created Stripe Checkout session`,
     );
-  }
 
-  const trialPeriodDays =
-    plan && 'trialPeriodDays' in plan
-      ? (plan.trialPeriodDays as number)
-      : undefined;
+    // if the checkout is embedded, we need to render the checkout
+    // therefore, we send the clientSecret back to the client
+    if (embedded) {
+      logger.info(
+        { id: session.id },
+        `Using embedded checkout mode. Sending client secret back to client.`,
+      );
 
-  // create the Stripe Checkout session
-  const response = await createStripeCheckout({
-    returnUrl,
-    userId,
-    priceId,
-    customerId,
-    trialPeriodDays,
-    customerEmail,
-  }).catch((e) => {
-    logger.error(e, `Stripe Checkout error`);
-  });
+      return {
+        clientSecret: session.client_secret,
+      };
+    }
 
-  // check if the response is valid (i.e. it contains the URL)
-  // if not, redirect to the error page
-  if (!response) {
-    return redirectToErrorPage(`An unexpected error occurred`);
-  }
+    // if the checkout is embedded, we need to render the checkout
+    // therefore, we send the clientSecret back to the client
+    if (embedded) {
+      logger.info(
+        { id: session.id },
+        `Using embedded checkout mode. Sending client secret back to client.`,
+      );
 
-  // retrieve the Checkout Portal URL
-  const portalUrl = getCheckoutPortalUrl(response.url, returnUrl);
+      return {
+        clientSecret: session.client_secret,
+      };
+    }
 
-  // redirect user back based on the response
-  return redirect(portalUrl, RedirectType.replace);
-});
+    // retrieve the Checkout Portal URL
+    const portalUrl = getCheckoutPortalUrl(session.url, returnUrl);
+
+    // redirect user back based on the response
+    return redirect(portalUrl, RedirectType.replace);
+  },
+);
 
 export const createBillingPortalSessionAction = withSession(
   async (formData: FormData) => {
