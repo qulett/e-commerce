@@ -3,12 +3,13 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 
-import If from '~/core/ui/If';
 import PricingTable from '~/components/PricingTable';
 import CheckoutRedirectButton from '../components/CheckoutRedirectButton';
 import BillingPortalRedirectButton from '../components/BillingRedirectButton';
+
 import Button from '~/core/ui/Button';
 import ErrorBoundary from '~/core/ui/ErrorBoundary';
+import If from '~/core/ui/If';
 
 const EmbeddedStripeCheckout = dynamic(
   () => import('./EmbeddedStripeCheckout'),
@@ -34,6 +35,7 @@ const PlanSelectionForm: React.FCC<{
           CheckoutButton={(props) => {
             return (
               <ErrorBoundary
+                key={retry}
                 fallback={
                   <CheckoutErrorMessage
                     onRetry={() => setRetry((retry) => retry + 1)}
@@ -41,7 +43,6 @@ const PlanSelectionForm: React.FCC<{
                 }
               >
                 <CheckoutRedirectButton
-                  customerId={customerId}
                   stripePriceId={props.stripePriceId}
                   recommended={props.recommended}
                   onCheckoutCreated={setClientSecret}

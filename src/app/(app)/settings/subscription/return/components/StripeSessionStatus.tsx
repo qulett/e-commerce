@@ -68,7 +68,11 @@ function SuccessSessionStatus({
           </p>
         </div>
 
-        <Button href={configuration.paths.appHome} variant={'outline'}>
+        <Button
+          data-cy={'payment-return-success'}
+          href={configuration.paths.appHome}
+          variant={'outline'}
+        >
           <span className={'flex space-x-2.5 items-center'}>
             <span>Proceed to App</span>
 

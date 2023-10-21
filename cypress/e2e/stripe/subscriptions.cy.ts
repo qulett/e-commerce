@@ -1,70 +1,25 @@
 import stripePo from '../../support/stripe.po';
-import StripeWebhooks from '~/core/stripe/stripe-webhooks.enum';
 
 describe(`Create Subscription`, () => {
-  before(() => {
-    // switch to the organization that is mapped to the Stripe mocks
-    cy.signIn(`/settings/subscription`);
-  });
-
-  describe('Using Webhooks', () => {
-    describe(`When the user creates a subscription with status = PAID`, () => {
+  describe('Using the UI', () => {
+    describe('The session should be created successfully', () => {
       before(() => {
-        cy.fixture('session').then((session) => {
-          stripePo.sendWebhook({
-            body: session,
-            type: StripeWebhooks.Completed,
-          });
-        });
-      });
+        cy.signIn(`/settings/subscription`);
 
-      it(`should display a Subscription Card`, () => {
-        cy.reload();
+        stripePo.selectPlan(0);
+        stripePo.$fillForm();
+        stripePo.$cardForm().submit();
 
-        stripePo.$subscriptionName().should('have.text', 'Testing Plan');
-      });
-    });
+        cy.cyGet('payment-return-success').should('exist');
 
-    describe(`When the user unsubscribes`, () => {
-      before(() => {
-        cy.fixture('subscription').then((subscription) => {
-          stripePo.sendWebhook({
-            body: subscription,
-            type: StripeWebhooks.SubscriptionDeleted,
-          });
-        });
-      });
+        // Wait for the webhook to be called
+        cy.wait(3000);
 
-      it('should delete the subscription', () => {
-        cy.reload();
-        stripePo.$subscriptionName().should('not.exist');
-      });
-    });
+        cy.visit(`/settings/subscription`);
 
-    describe(`When the user creates a subscription with status = AWAITING_PAYMENT`, () => {
-      before(() => {
-        cy.fixture('session').then((session) => {
-          stripePo.sendWebhook({
-            body: {
-              ...session,
-              payment_status: 'incomplete',
-            },
-            type: StripeWebhooks.Completed,
-          });
-        });
-      });
-
-      it(`should display a warning alert`, () => {
-        cy.reload();
-        stripePo.$awaitingPaymentAlert().should('be.visible');
-
-        // restore DB by deleting the subscription
-        cy.fixture('subscription').then((subscription) => {
-          stripePo.sendWebhook({
-            body: subscription,
-            type: StripeWebhooks.SubscriptionDeleted,
-          });
-        });
+        stripePo.verifyCreateSubscriptionElements();
+        stripePo.$manageBillingButton().should('exist');
+        stripePo.$assertStatus('active');
       });
     });
   });

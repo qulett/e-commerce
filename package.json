@@ -1,6 +1,6 @@
 {
   "name": "next-supabase-saas-kit-lite",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "sideEffects": false,
   "scripts": {
@@ -19,7 +19,6 @@
     "supabase:db:reset": "supabase db reset",
     "format": "prettier --write .",
     "stripe:listen": "docker run --rm -it --name=stripe -v ~/.config/stripe:/root/.config/stripe stripe/stripe-cli:latest listen --forward-to http://host.docker.internal:3000/api/stripe/webhook",
-    "stripe:mock-server": "docker run --rm -it -p 12111-12112:12111-12112 stripe/stripe-mock:latest",
     "typegen": "supabase gen types typescript --local > src/database.types.ts",
     "typecheck": "tsc -b && tsc -b cypress",
     "test:e2e": "sh ./scripts/test.sh",

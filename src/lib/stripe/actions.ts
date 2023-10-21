@@ -17,6 +17,7 @@ import configuration from '~/configuration';
 import createBillingPortalSession from '~/lib/stripe/create-billing-portal-session';
 import { withSession } from '~/core/generic/actions-utils';
 import verifyCsrfToken from '~/core/verify-csrf-token';
+import { getUserSubscription } from '~/lib/subscriptions/queries';
 
 export const createCheckoutAction = withSession(
   async (_, formData: FormData) => {
@@ -38,7 +39,7 @@ export const createCheckoutAction = withSession(
       return redirectToErrorPage(`Invalid request body`);
     }
 
-    const { priceId, customerId, returnUrl, csrfToken } = bodyResult.data;
+    const { priceId, returnUrl, csrfToken } = bodyResult.data;
 
     await verifyCsrfToken(csrfToken);
 
@@ -49,6 +50,13 @@ export const createCheckoutAction = withSession(
     const sessionResult = await requireSession(client);
     const userId = sessionResult.user.id;
     const customerEmail = sessionResult.user.email;
+
+    const { data: customerSubscriptionData } = await getUserSubscription(
+      client,
+      userId,
+    );
+
+    const customerId = customerSubscriptionData?.customerId;
 
     const plan = getPlanByPriceId(priceId);
 
@@ -177,7 +185,6 @@ function getCheckoutBodySchema() {
   return z.object({
     csrfToken: z.string().min(1),
     priceId: z.string().min(1),
-    customerId: z.string().optional(),
     returnUrl: z.string().min(1),
   });
 }
