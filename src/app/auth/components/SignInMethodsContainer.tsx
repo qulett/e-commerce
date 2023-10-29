@@ -11,6 +11,7 @@ import PhoneNumberSignInContainer from '~/app/auth/components/PhoneNumberSignInC
 import EmailLinkAuth from '~/app/auth/components/EmailLinkAuth';
 
 import configuration from '~/configuration';
+import EmailOtpContainer from '~/app/auth/components/EmailOtpContainer';
 
 function SignInMethodsContainer() {
   const router = useRouter();
@@ -41,6 +42,10 @@ function SignInMethodsContainer() {
 
       <If condition={configuration.auth.providers.emailLink}>
         <EmailLinkAuth />
+      </If>
+
+      <If condition={configuration.auth.providers.emailOtp}>
+        <EmailOtpContainer shouldCreateUser={false} />
       </If>
     </>
   );

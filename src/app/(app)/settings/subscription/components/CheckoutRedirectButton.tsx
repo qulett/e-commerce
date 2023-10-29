@@ -1,10 +1,6 @@
 'use client';
 
-// @ts-ignore
-import { experimental_useFormState as useFormState } from 'react-dom';
-// @ts-ignore
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
-
+import { useFormStatus, useFormState } from 'react-dom';
 import { useEffect } from 'react';
 
 import classNames from 'clsx';

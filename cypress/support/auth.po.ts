@@ -1,3 +1,5 @@
+import { createBrowserClient, createServerClient } from '@supabase/ssr';
+
 // we use a namespace not to pollute the IDE with methods from the tests
 const authPageObject = {
   getDefaultUserEmail: () => Cypress.env(`USER_EMAIL`) as string,
@@ -13,7 +15,6 @@ const authPageObject = {
   $getRepeatPasswordInput: () => cy.cyGet(`repeat-password-input`),
   $getSubmitButton: () => cy.cyGet(`auth-submit-button`),
   $getErrorMessage: () => cy.cyGet(`auth-error-message`),
-  $getAcceptInviteSubmitButton: () => cy.cyGet(`accept-invite-submit-button`),
   signInWithEmailAndPassword(email: string, password: string) {
     cy.wait(100);
 
@@ -33,51 +34,41 @@ const authPageObject = {
     this.$getRepeatPasswordInput().type(repeatPassword || password);
     this.$getSubmitButton().click();
   },
-  signInProgrammatically({
+  async signInProgrammatically({
     email,
     password,
   }: {
     email: string;
     password: string;
   }) {
-    const apiUrl = Cypress.env('SUPABASE_URL');
-    const apiKey = Cypress.env('SUPABASE_ANON_KEY');
-    const url = `${apiUrl}/auth/v1/token?grant_type=password`;
+    const client = createBrowserClient(
+      Cypress.env('SUPABASE_URL'),
+      Cypress.env('SUPABASE_ANON_KEY'),
+    );
 
-    const host = new URL(apiUrl).hostname.split('.')[0];
-    const cookieName = `sb-${host}-auth-token`;
+    cy.log(`Signing in programmatically ...`);
 
-    cy.request({
-      url,
-      method: 'POST',
-      headers: {
-        apikey: apiKey,
-        Authorization: `Bearer ${apiKey}`,
-        ['Content-Type']: 'application/json',
-        Accept: 'application/json',
-      },
-      body: {
-        email,
-        password,
-        data: {},
-        gotrue_meta_security: {},
-      },
-    }).as('auth');
+    const message = await client.auth
+      .signInWithPassword({ email, password })
+      .then(({ error, data }) => {
+        console.log({ error, data });
 
-    return cy
-      .get('@auth')
-      .its('body')
-      .then((body) => {
-        cy.setCookie(
-          cookieName,
-          JSON.stringify([
-            body.access_token,
-            body.refresh_token,
-            body.provider_token,
-            body.provider_refresh_token,
-          ]),
-        );
+        if (error) {
+          return error.message;
+        }
+
+        return JSON.stringify(data);
       });
+  },
+  validate() {
+    const client = createBrowserClient(
+      Cypress.env('SUPABASE_URL'),
+      Cypress.env('SUPABASE_ANON_KEY'),
+    );
+
+    return client.auth.getUser().then(({ data }) => {
+      return data;
+    });
   },
 };
 

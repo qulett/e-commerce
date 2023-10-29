@@ -67,7 +67,6 @@ const loadAppData = cache(async () => {
     };
   } catch (error) {
     const logger = getLogger();
-    console.error(error);
 
     // if the error is a redirect error, we simply redirect the user
     // to the destination URL extracted from the error

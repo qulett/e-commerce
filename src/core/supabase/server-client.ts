@@ -1,53 +1,46 @@
 import { cache } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-import invariant from 'tiny-invariant';
-import type { Database } from '~/database.types';
-
-const createServerSupabaseClient = cache(() => {
-  const cookieStore = cookies();
-
-  return createServerComponentClient<Database>({ cookies: () => cookieStore });
-});
+import getSupabaseClientKeys from '~/core/supabase/get-supabase-client-keys';
 
 /**
  * @name getSupabaseServerClient
  * @description Get a Supabase client for use in the Server Routes
  * @param params
  */
-function getSupabaseServerClient(
-  params = {
-    admin: false,
-  },
-) {
-  const env = process.env;
+const getSupabaseServerClient = cache(
+  (
+    params = {
+      admin: false,
+    },
+  ) => {
+    const cookieStore = cookies();
+    const keys = getSupabaseClientKeys();
 
-  invariant(env.NEXT_PUBLIC_SUPABASE_URL, `Supabase URL not provided`);
+    if (params.admin) {
+      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  invariant(
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    `Supabase Anon Key not provided`,
-  );
+      if (!serviceRoleKey) {
+        throw new Error('Supabase Service Role Key not provided');
+      }
 
-  if (params.admin) {
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    invariant(serviceRoleKey, `Supabase Service Role Key not provided`);
-
-    return createClient<Database>(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      serviceRoleKey,
-      {
+      return createServerClient(keys.url, serviceRoleKey, {
         auth: {
           persistSession: false,
         },
-      },
-    );
-  }
+        cookies: {},
+      });
+    }
 
-  return createServerSupabaseClient();
-}
+    return createServerClient(keys.url, keys.anonKey, {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    });
+  },
+);
 
 export default getSupabaseServerClient;
