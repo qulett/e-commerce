@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 
 import requireSession from '~/lib/user/require-session';
-import getSupabaseServerClient from '~/core/supabase/server-client';
+import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 import getStripeInstance from '~/core/stripe/get-stripe';
 import { StripeSessionStatus } from './components/StripeSessionStatus';
 import RecoverStripeCheckout from './components/RecoverStripeCheckout';
@@ -45,7 +45,7 @@ async function ReturnStripeSessionPage({
 export default ReturnStripeSessionPage;
 
 export async function loadStripeSession(sessionId: string) {
-  await requireSession(getSupabaseServerClient());
+  await requireSession(getSupabaseServerComponentClient());
 
   // now we fetch the session from Stripe
   // and check if it's still open

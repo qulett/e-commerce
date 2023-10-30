@@ -1,6 +1,7 @@
+import { redirect } from 'next/navigation';
+
 import requireSession from '~/lib/user/require-session';
 import getSupabaseServerActionClient from '~/core/supabase/action-client';
-import { redirect } from 'next/navigation';
 import isUserSuperAdmin from '~/app/admin/utils/is-user-super-admin';
 
 /**
@@ -26,7 +27,9 @@ export function withAdminSession<Args extends any[], Return extends unknown>(
   fn: (...params: Args) => Return,
 ) {
   return async (...params: Args) => {
-    const isAdmin = await isUserSuperAdmin();
+    const isAdmin = await isUserSuperAdmin({
+      client: getSupabaseServerActionClient(),
+    });
 
     if (!isAdmin) {
       redirect('/');

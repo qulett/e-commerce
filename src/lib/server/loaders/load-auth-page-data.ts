@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import configuration from '~/configuration';
 
-import getSupabaseServerClient from '~/core/supabase/server-client';
+import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 import verifyRequiresMfa from '~/core/session/utils/check-requires-mfa';
 
 /**
@@ -17,7 +17,7 @@ import verifyRequiresMfa from '~/core/session/utils/check-requires-mfa';
  * to the authentication pages.
  */
 const loadAuthPageData = cache(async () => {
-  const client = getSupabaseServerClient();
+  const client = getSupabaseServerComponentClient();
 
   const {
     data: { session },

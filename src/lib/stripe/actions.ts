@@ -11,13 +11,13 @@ import getApiRefererPath from '~/core/generic/get-api-referer-path';
 
 import createStripeCheckout from '~/lib/stripe/create-checkout';
 import requireSession from '~/lib/user/require-session';
-import getSupabaseServerClient from '~/core/supabase/server-client';
 
 import configuration from '~/configuration';
 import createBillingPortalSession from '~/lib/stripe/create-billing-portal-session';
 import { withSession } from '~/core/generic/actions-utils';
 import verifyCsrfToken from '~/core/verify-csrf-token';
 import { getUserSubscription } from '~/lib/subscriptions/queries';
+import getSupabaseServerActionClient from '~/core/supabase/action-client';
 
 export const createCheckoutAction = withSession(
   async (_, formData: FormData) => {
@@ -44,7 +44,7 @@ export const createCheckoutAction = withSession(
     await verifyCsrfToken(csrfToken);
 
     // create the Supabase client
-    const client = getSupabaseServerClient();
+    const client = getSupabaseServerActionClient();
 
     // require the user to be logged in
     const sessionResult = await requireSession(client);
@@ -150,7 +150,7 @@ export const createBillingPortalSessionAction = withSession(
 
     await verifyCsrfToken(csrfToken);
 
-    const client = getSupabaseServerClient();
+    const client = getSupabaseServerActionClient();
     const logger = getLogger();
 
     await requireSession(client);

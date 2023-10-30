@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 
 import getLogger from '~/core/logger';
 import configuration from '~/configuration';
-import getSupabaseServerClient from '~/core/supabase/server-client';
+import getSupabaseRouteHandlerClient from '~/core/supabase/route-handler-client';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const authCode = requestUrl.searchParams.get('code');
 
   if (authCode) {
-    const client = getSupabaseServerClient();
+    const client = getSupabaseRouteHandlerClient();
 
     try {
       const { error } = await client.auth.exchangeCodeForSession(authCode);
