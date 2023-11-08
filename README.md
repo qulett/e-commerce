@@ -35,14 +35,10 @@ Move to the folder just cloned:
 cd your-saas
 ```
 
-Reinitialize Git and set this repository as your upstream fork, so you can
+Set this repository as your upstream fork, so you can
 pull updates when needed:
 
 ```
-rm -rf .git
-git init
-git add .
-git commit -am "Inital Commit"
 git remote add upstream https://github.com/makerkit/next-supabase-saas-kit-lite
 ```
 
