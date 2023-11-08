@@ -58,7 +58,7 @@ export default defineConfig({
 
 function getExcludeSpecPattern() {
   const enableStripeTests = process.env.ENABLE_STRIPE_TESTING === 'true';
-  const enableThemeTests = configuration.enableThemeSwitcher;
+  const enableThemeTests = configuration.features.enableThemeSwitcher;
 
   const excludePatterns = [];
 

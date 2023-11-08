@@ -12,7 +12,7 @@ interface UserSession {
     user: {
       id: string;
       email: Maybe<string>;
-      phone: Maybe<string>;
+      phone: Maybe<string> | null;
     };
   };
 

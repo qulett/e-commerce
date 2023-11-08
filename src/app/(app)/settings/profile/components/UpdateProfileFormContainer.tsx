@@ -13,6 +13,7 @@ import If from '~/core/ui/If';
 import { refreshSessionAction } from '../actions';
 
 import configuration from '~/configuration';
+import ProfileDangerZone from '~/app/(app)/settings/profile/components/ProfileDangerZone';
 
 function UpdateProfileFormContainer() {
   const { userSession, setUserSession } = useContext(UserSessionContext);
@@ -53,8 +54,8 @@ function UpdateProfileFormContainer() {
 
       <If condition={configuration.auth.providers.phoneNumber}>
         <SettingsTile
-          heading={`My Details`}
-          subHeading={`Manage your profile details`}
+          heading={`Phone Number`}
+          subHeading={`Manage your phone number`}
         >
           <UpdatePhoneNumberForm
             session={session}
@@ -62,6 +63,15 @@ function UpdateProfileFormContainer() {
               await refreshSessionAction();
             }}
           />
+        </SettingsTile>
+      </If>
+
+      <If condition={configuration.features.enableAccountDeletion}>
+        <SettingsTile
+          heading={`Danger Zone`}
+          subHeading={`Delete your account`}
+        >
+          <ProfileDangerZone />
         </SettingsTile>
       </If>
     </div>

@@ -5,8 +5,8 @@
  */
 interface UserData {
   id: string;
-  photoUrl?: string;
-  displayName?: string;
+  photoUrl: string | null;
+  displayName: string | null;
 }
 
 export default UserData;

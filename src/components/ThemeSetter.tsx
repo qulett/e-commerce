@@ -7,7 +7,7 @@ import configuration from '~/configuration';
 
 function ThemeSetter() {
   useEffect(() => {
-    if (isBrowser() && configuration.enableThemeSwitcher) {
+    if (isBrowser() && configuration.features.enableThemeSwitcher) {
       loadSelectedTheme();
     }
   }, []);

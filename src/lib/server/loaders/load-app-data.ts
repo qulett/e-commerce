@@ -10,7 +10,7 @@ import {
 } from 'next/dist/client/components/redirect';
 
 import getUIStateCookies from '~/lib/server/loaders/utils/get-ui-state-cookies';
-import { getUserDataById } from '../queries';
+import { getUserDataById } from '../../user/database/queries';
 
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 import requireSession from '~/lib/user/require-session';

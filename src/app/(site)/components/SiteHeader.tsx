@@ -32,7 +32,7 @@ const SiteHeader: React.FCC = () => {
 
         <div className={'flex flex-1 items-center justify-end space-x-4'}>
           <div className={'items-center flex'}>
-            <If condition={configuration.enableThemeSwitcher}>
+            <If condition={configuration.features.enableThemeSwitcher}>
               <DarkModeToggle />
             </If>
           </div>

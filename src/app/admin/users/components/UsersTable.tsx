@@ -249,9 +249,7 @@ const columns: Array<ColumnDef<UserRow>> = [
 
                 <DropdownMenuItem asChild>
                   <Link
-                    className={
-                      'text-red-500 hover:bg-red-50 dark:hover:bg-red-500/5'
-                    }
+                    className={'text-orange-500'}
                     href={`/admin/users/${user.id}/ban`}
                   >
                     Ban User
@@ -266,6 +264,15 @@ const columns: Array<ColumnDef<UserRow>> = [
                   </Link>
                 </DropdownMenuItem>
               </If>
+
+              <DropdownMenuItem asChild>
+                <Link
+                  className={'text-red-500'}
+                  href={`/admin/users/${user.id}/delete`}
+                >
+                  Delete User
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

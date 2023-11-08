@@ -7,9 +7,13 @@ import { Database } from '~/database.types';
 /**
  * @name requireSession
  * @description Require a session to be present in the request
- * @param client
  */
-async function requireSession(client: SupabaseClient<Database>) {
+async function requireSession(
+  client: SupabaseClient<Database>,
+  params = {
+    verifyFromServer: true,
+  },
+) {
   const { data, error } = await client.auth.getSession();
 
   if (!data.session || error) {
@@ -22,6 +26,14 @@ async function requireSession(client: SupabaseClient<Database>) {
   // redirect them to the page where they can verify their identity.
   if (requiresMfa) {
     return redirect(configuration.paths.signInMfa);
+  }
+
+  if (params.verifyFromServer) {
+    const { data: user, error } = await client.auth.getUser();
+
+    if (!user || error) {
+      return redirect(configuration.paths.signIn);
+    }
   }
 
   return data.session;

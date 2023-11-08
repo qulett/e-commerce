@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { getUserDataById } from '~/lib/server/queries';
+import { getUserDataById } from '~/lib/user/database/queries';
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 
 /**

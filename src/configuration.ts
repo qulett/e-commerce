@@ -37,7 +37,11 @@ const configuration = {
   },
   production,
   environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
-  enableThemeSwitcher: true,
+  features: {
+    enableThemeSwitcher: true,
+    enableAccountDeletion:
+      process.env.NEXT_PUBLIC_ENABLE_ACCOUNT_DELETION === 'true',
+  },
   theme: Themes.Light,
   paths: {
     signIn: '/auth/sign-in',
