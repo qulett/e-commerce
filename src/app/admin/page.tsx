@@ -1,10 +1,10 @@
 import { use } from 'react';
 
-import AppContainer from '~/app/(app)/components/AppContainer';
 import AdminHeader from '~/app/admin/components/AdminHeader';
 import AdminGuard from '~/app/admin/components/AdminGuard';
 import AdminDashboard from '~/app/admin/components/AdminDashboard';
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
+import { PageBody } from '~/core/ui/Page';
 
 import configuration from '~/configuration';
 
@@ -16,13 +16,13 @@ function AdminPage() {
   const data = use(loadData());
 
   return (
-    <div className={'flex flex-col flex-1'}>
+    <>
       <AdminHeader>Admin</AdminHeader>
 
-      <AppContainer>
+      <PageBody>
         <AdminDashboard data={data} />
-      </AppContainer>
-    </div>
+      </PageBody>
+    </>
   );
 }
 

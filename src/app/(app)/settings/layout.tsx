@@ -1,10 +1,7 @@
-import React from 'react';
-import { Cog8ToothIcon } from '@heroicons/react/24/outline';
-
 import NavigationMenu from '~/core/ui/Navigation/NavigationMenu';
 import NavigationItem from '~/core/ui/Navigation/NavigationItem';
 import AppHeader from '~/app/(app)/components/AppHeader';
-import AppContainer from '~/app/(app)/components/AppContainer';
+import { PageBody } from '~/core/ui/Page';
 
 const links = [
   {
@@ -20,14 +17,12 @@ const links = [
 async function SettingsLayout({ children }: React.PropsWithChildren) {
   return (
     <>
-      <AppHeader>
-        <span className={'flex space-x-2'}>
-          <Cog8ToothIcon className="w-6" />
-          <span>Settings</span>
-        </span>
-      </AppHeader>
+      <AppHeader
+        title={'Settings'}
+        description={'Manage your settings and preferences.'}
+      />
 
-      <AppContainer>
+      <PageBody>
         <NavigationMenu bordered>
           {links.map((link) => (
             <NavigationItem
@@ -43,7 +38,7 @@ async function SettingsLayout({ children }: React.PropsWithChildren) {
         >
           {children}
         </div>
-      </AppContainer>
+      </PageBody>
     </>
   );
 }

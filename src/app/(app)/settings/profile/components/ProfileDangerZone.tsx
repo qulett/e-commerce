@@ -24,10 +24,15 @@ function DeleteProfileContainer() {
       <div className={'flex flex-col space-y-1'}>
         <Heading type={5}>Delete Account</Heading>
 
-        <p className={'text-gray-500'}>This action is irreversible.</p>
+        <p className={'text-gray-500 text-sm'}>
+          Please note that this action cannot be undone. You will be asked to
+          confirm before your account is deleted.
+        </p>
       </div>
 
-      <DeleteProfileModal />
+      <div>
+        <DeleteProfileModal />
+      </div>
     </div>
   );
 }
@@ -37,17 +42,9 @@ function DeleteProfileModal() {
     <Modal
       heading={`Deleting account`}
       Trigger={
-        <div className={'flex flex-col space-y-2'}>
-          <div>
-            <Button data-cy={'delete-account-button'} variant={'destructive'}>
-              Delete Account
-            </Button>
-          </div>
-
-          <p className={'text-sm text-gray-500 dark:text-gray-400'}>
-            You will be asked to confirm this action in the next step.
-          </p>
-        </div>
+        <Button data-cy={'delete-account-button'} variant={'destructive'}>
+          Delete Account
+        </Button>
       }
     >
       <ErrorBoundary fallback={<DeleteProfileErrorAlert />}>

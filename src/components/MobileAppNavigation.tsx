@@ -7,12 +7,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/core/ui/Dropdown';
 
 import NAVIGATION_CONFIG from '../navigation.config';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import useSignOut from '~/core/hooks/use-sign-out';
 
-const MobileNavigation: React.FC = () => {
+const MobileAppNavigation: React.FC = () => {
   const Links = NAVIGATION_CONFIG.items.map((item) => {
     return (
       <DropdownMenuItem key={item.path}>
@@ -34,9 +37,27 @@ const MobileNavigation: React.FC = () => {
         <Bars3Icon className={'h-8'} />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent>{Links}</DropdownMenuContent>
+      <DropdownMenuContent sideOffset={10} className={'rounded-none w-screen'}>
+        {Links}
+        <DropdownMenuSeparator />
+        <SignOutDropdownItem />
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export default MobileNavigation;
+export default MobileAppNavigation;
+
+function SignOutDropdownItem() {
+  const signOut = useSignOut();
+
+  return (
+    <DropdownMenuItem
+      className={'flex w-full items-center space-x-4 h-12'}
+      onClick={signOut}
+    >
+      <ArrowLeftOnRectangleIcon className={'h-5'} />
+      <span>Sign out</span>
+    </DropdownMenuItem>
+  );
+}

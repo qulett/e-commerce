@@ -1,10 +1,11 @@
 import { use } from 'react';
 import { redirect } from 'next/navigation';
-import { cookies, headers } from 'next/headers';
+import { headers } from 'next/headers';
 
 import isUserSuperAdmin from '~/app/admin/utils/is-user-super-admin';
 import AdminSidebar from '~/app/admin/components/AdminSidebar';
 import AdminProviders from '~/app/admin/components/AdminProviders';
+import { Page } from '~/core/ui/Page';
 
 function AdminLayout({ children }: React.PropsWithChildren) {
   const isAdmin = use(isUserSuperAdmin());
@@ -14,15 +15,10 @@ function AdminLayout({ children }: React.PropsWithChildren) {
   }
 
   const csrfToken = headers().get('X-CSRF-Token');
-  const collapsed = cookies().get('sidebarCollapsed')?.value === 'true';
 
   return (
-    <AdminProviders csrfToken={csrfToken} collapsed={collapsed}>
-      <div className={'flex'}>
-        <AdminSidebar />
-
-        {children}
-      </div>
+    <AdminProviders csrfToken={csrfToken}>
+      <Page sidebar={<AdminSidebar />}>{children}</Page>
     </AdminProviders>
   );
 }

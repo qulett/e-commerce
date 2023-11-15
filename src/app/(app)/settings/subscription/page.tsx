@@ -1,6 +1,6 @@
-import SettingsTile from '~/app/(app)/settings/components/SettingsTile';
-import Plans from '~/app/(app)/settings/subscription/components/Plans';
-import PlansStatusAlertContainer from '~/app/(app)/settings/subscription/components/PlanStatusAlertContainer';
+import Plans from './components/Plans';
+import PlansStatusAlertContainer from './components/PlanStatusAlertContainer';
+import { Section, SectionBody, SectionHeader } from '~/core/ui/Section';
 
 export const metadata = {
   title: 'Subscription',
@@ -8,16 +8,19 @@ export const metadata = {
 
 const SubscriptionSettingsPage = () => {
   return (
-    <SettingsTile
-      heading={'Subscription'}
-      subHeading={'Manage your Subscription and Billing'}
-    >
-      <div className={'flex flex-col space-y-4'}>
+    <Section className={'border-transparent'}>
+      <SectionHeader
+        className={'!p-0'}
+        title={'Subscription'}
+        description={'Manage your Subscription and Billing'}
+      />
+
+      <SectionBody className={'space-y-4'}>
         <PlansStatusAlertContainer />
 
         <Plans />
-      </div>
-    </SettingsTile>
+      </SectionBody>
+    </Section>
   );
 };
 

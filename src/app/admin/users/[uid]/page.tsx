@@ -6,7 +6,6 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 import AdminHeader from '~/app/admin/components/AdminHeader';
 import AdminGuard from '~/app/admin/components/AdminGuard';
-import AppContainer from '~/app/(app)/components/AppContainer';
 import { TextFieldInput, TextFieldLabel } from '~/core/ui/TextField';
 import Heading from '~/core/ui/Heading';
 
@@ -15,6 +14,7 @@ import UserActionsDropdown from '~/app/admin/users/[uid]/components/UserActionsD
 import Tile from '~/core/ui/Tile';
 import Badge from '~/core/ui/Badge';
 import Label from '~/core/ui/Label';
+import { PageBody } from '~/core/ui/Page';
 
 import configuration from '~/configuration';
 
@@ -42,10 +42,10 @@ function AdminUserPage({ params }: Params) {
   );
 
   return (
-    <div className={'flex flex-col flex-1'}>
+    <>
       <AdminHeader>Manage User</AdminHeader>
 
-      <AppContainer>
+      <PageBody>
         <div className={'flex flex-col space-y-6'}>
           <div className={'flex justify-between'}>
             <Breadcrumbs displayName={displayName ?? email ?? ''} />
@@ -104,8 +104,8 @@ function AdminUserPage({ params }: Params) {
             </TextFieldLabel>
           </Tile>
         </div>
-      </AppContainer>
-    </div>
+      </PageBody>
+    </>
   );
 }
 

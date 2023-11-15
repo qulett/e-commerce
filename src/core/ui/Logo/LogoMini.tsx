@@ -3,7 +3,7 @@ import LogoImageMini from '~/core/ui/Logo/LogoImageMini';
 
 const LogoMini: React.FCC<{ href?: string }> = ({ href }) => {
   return (
-    <Link href={href ?? '/'}>
+    <Link className={'mx-auto'} href={href ?? '/'}>
       <LogoImageMini />
     </Link>
   );
