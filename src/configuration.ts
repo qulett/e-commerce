@@ -58,7 +58,7 @@ const configuration = {
     },
   },
   sentry: {
-    dsn: process.env.SENTRY_DSN,
+    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   },
   stripe: {
     embedded: true,
