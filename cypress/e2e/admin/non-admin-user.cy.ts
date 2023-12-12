@@ -11,6 +11,6 @@ describe(`Non-Admin user accessing the Super Admin`, () => {
       failOnStatusCode: false,
     });
 
-    cy.url().should('equal', 'http://localhost:3000/');
+    cy.url().should('equal', 'http://localhost:3000/404');
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "next-supabase-saas-kit-lite",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "private": true,
   "sideEffects": false,
   "scripts": {
@@ -46,7 +46,6 @@
     "@react-email/components": "0.0.11",
     "@sentry/node": "^7.86.0",
     "@sentry/react": "^7.86.0",
-    "@sentry/tracing": "^7.86.0",
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.2.1",
     "@supabase/ssr": "^0.0.10",
@@ -96,7 +95,7 @@
     "postcss": "^8.4.32",
     "prettier": "3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.9",
-    "supabase": "^1.123.0",
+    "supabase": "^1.123.4",
     "tailwindcss": "^3.3.6",
     "typescript": "5.3.3"
   },

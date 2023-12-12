@@ -9,7 +9,6 @@ import Button from '~/core/ui/Button';
 import If from '~/core/ui/If';
 
 import { impersonateUser } from '~/app/admin/users/@modal/[uid]/actions';
-import useCsrfToken from '~/core/hooks/use-csrf-token';
 
 import ImpersonateUserAuthSetter from '../components/ImpersonateUserAuthSetter';
 import PageLoadingIndicator from '~/core/ui/PageLoadingIndicator';
@@ -23,7 +22,6 @@ function ImpersonateUserConfirmationModal({
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [pending, startTransition] = useTransition();
-  const csrfToken = useCsrfToken();
   const [error, setError] = useState<boolean>();
 
   const [tokens, setTokens] = useState<{
@@ -44,7 +42,6 @@ function ImpersonateUserConfirmationModal({
       try {
         const response = await impersonateUser({
           userId: user.id,
-          csrfToken,
         });
 
         setTokens(response);

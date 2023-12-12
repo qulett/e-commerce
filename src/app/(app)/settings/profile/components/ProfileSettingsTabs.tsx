@@ -49,7 +49,11 @@ const ProfileSettingsTabs: React.FC = () => {
             link={links.Authentication}
           />
 
-          <NavigationItem className={itemClassName} link={links.Email} />
+          <NavigationItem
+            className={itemClassName}
+            disabled={!canEditPassword}
+            link={links.Email}
+          />
 
           <NavigationItem
             className={itemClassName}

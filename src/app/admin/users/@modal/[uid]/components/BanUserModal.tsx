@@ -7,7 +7,6 @@ import type { User } from '@supabase/gotrue-js';
 import Modal from '~/core/ui/Modal';
 import Button from '~/core/ui/Button';
 import { banUser } from '~/app/admin/users/@modal/[uid]/actions';
-import useCsrfToken from '~/core/hooks/use-csrf-token';
 
 function BanUserModal({
   user,
@@ -17,7 +16,6 @@ function BanUserModal({
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [pending, startTransition] = useTransition();
-  const csrfToken = useCsrfToken();
   const displayText = user.email ?? user.phone ?? '';
 
   const onDismiss = () => {
@@ -30,7 +28,6 @@ function BanUserModal({
     startTransition(async () => {
       await banUser({
         userId: user.id,
-        csrfToken,
       });
 
       onDismiss();

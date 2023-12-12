@@ -8,7 +8,6 @@ import { TextFieldInput, TextFieldLabel } from '~/core/ui/TextField';
 import Modal from '~/core/ui/Modal';
 import Button from '~/core/ui/Button';
 import { deleteUserAction } from '~/app/admin/users/@modal/[uid]/actions';
-import useCsrfToken from '~/core/hooks/use-csrf-token';
 
 function DeleteUserModal({
   user,
@@ -18,7 +17,6 @@ function DeleteUserModal({
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [pending, startTransition] = useTransition();
-  const csrfToken = useCsrfToken();
   const displayText = user.email ?? user.phone ?? '';
 
   const onDismiss = () => {
@@ -31,7 +29,6 @@ function DeleteUserModal({
     startTransition(async () => {
       await deleteUserAction({
         userId: user.id,
-        csrfToken,
       });
 
       onDismiss();

@@ -9,7 +9,6 @@ import { TextFieldInput, TextFieldLabel } from '~/core/ui/TextField';
 import ErrorBoundary from '~/core/ui/ErrorBoundary';
 import Alert from '~/core/ui/Alert';
 
-import useCsrfToken from '~/core/hooks/use-csrf-token';
 import { deleteUserAccountAction } from '~/lib/user/actions.server';
 
 function ProfileDangerZone() {
@@ -60,8 +59,6 @@ function DeleteProfileForm() {
       action={deleteUserAccountAction}
       className={'flex flex-col space-y-4'}
     >
-      <AuthenticityToken />
-
       <div className={'flex flex-col space-y-6'}>
         <div>
           This will delete your account and the data associated with it.
@@ -105,12 +102,6 @@ function DeleteAccountSubmitButton() {
       Yes, delete my account
     </Button>
   );
-}
-
-function AuthenticityToken() {
-  const csrfToken = useCsrfToken();
-
-  return <input type={'hidden'} name={'csrfToken'} value={csrfToken} />;
 }
 
 function DeleteProfileErrorAlert() {
