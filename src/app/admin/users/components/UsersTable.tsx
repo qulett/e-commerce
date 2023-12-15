@@ -111,10 +111,9 @@ const columns: Array<ColumnDef<UserRow>> = [
     id: 'createdAt',
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
+      const locale = configuration.site.locale ?? 'en-US';
 
-      return (
-        <span title={date.toLocaleString()}>{date.toLocaleDateString()}</span>
-      );
+      return <span>{date.toLocaleDateString(locale)}</span>;
     },
   },
   {
@@ -206,7 +205,8 @@ const columns: Array<ColumnDef<UserRow>> = [
 
       const canceled = subscription.cancelAtPeriodEnd;
       const date = subscription.periodEndsAt;
-      const formattedDate = new Date(date).toLocaleDateString();
+      const locale = configuration.site.locale ?? 'en-US';
+      const formattedDate = new Date(date).toLocaleDateString(locale);
 
       return canceled ? (
         <span className={'text-orange-500'}>Stops on {formattedDate}</span>

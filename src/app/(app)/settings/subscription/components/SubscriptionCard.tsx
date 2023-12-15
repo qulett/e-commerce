@@ -11,6 +11,8 @@ import Subscription from '~/lib/subscriptions/subscription';
 import configuration from '~/configuration';
 import SubscriptionStatusBadge from '~/app/(app)/components/SubscriptionStatusBadge';
 
+const locale = configuration.site.locale ?? 'en-US';
+
 const SubscriptionCard: React.FC<{
   subscription: Subscription;
 }> = ({ subscription }) => {
@@ -20,9 +22,9 @@ const SubscriptionCard: React.FC<{
 
   const dates = useMemo(() => {
     return {
-      endDate: new Date(subscription.periodEndsAt).toLocaleDateString(),
+      endDate: new Date(subscription.periodEndsAt).toLocaleDateString(locale),
       trialEndDate: subscription.trialEndsAt
-        ? new Date(subscription.trialEndsAt).toLocaleDateString()
+        ? new Date(subscription.trialEndsAt).toLocaleDateString(locale)
         : null,
     };
   }, [subscription]);
@@ -100,54 +102,16 @@ function RenewStatusDescription(
     </span>
   );
 }
-
-function getProducts() {
-  if (!configuration.production) {
-    /**
-     * This is read-only, so we also include the testing plans
-     * so we can test them.
-     *
-     * In production, of course, they should never show up
-     */
-    return [...configuration.stripe.products, ...getTestingProducts()];
-  }
-
-  return configuration.stripe.products;
-}
-
-/**
- * @name getTestingProducts
- * @description These plans are added for testing-purposes only
- */
-function getTestingProducts() {
-  return [
-    {
-      name: 'Testing Plan',
-      description: 'Description of your Testing plan',
-      features: [],
-      plans: [
-        {
-          price: '$999/year',
-          name: 'Yearly',
-          stripePriceId: 'price_1LFibmKr5l4rxPx3wWcSO8UY',
-        },
-      ],
-    },
-  ];
-}
-
 function useSubscriptionDetails(priceId: string) {
-  const products = useMemo(() => getProducts(), []);
-
   return useMemo(() => {
-    for (const product of products) {
+    for (const product of configuration.stripe.products) {
       for (const plan of product.plans) {
         if (plan.stripePriceId === priceId) {
           return { plan, product };
         }
       }
     }
-  }, [products, priceId]);
+  }, [priceId]);
 }
 
 export default SubscriptionCard;
