@@ -14,14 +14,20 @@ insert into auth.users
   'test-update-password@makerkit.dev', '$2a$10$xTcejQ5rqsn2R3p9jx4XhO18/Gv844c38YhXLgle5sbbtruLcr.x2', '2022-12-15 19:24:42.345467+00',
   null, '', NULL, '', null, '', '', null, '2022-12-15 19:24:42.347755+00', '{"provider": "email", "providers": ["email"]}', '{}', null, '2022-12-15 19:24:42.341975+00', '2022-12-15 19:24:42.349475+00', null, null, '', '', null, default, '', 0, NULL, '', null);
 
-insert into auth.identities (id, provider, user_id, identity_data, last_sign_in_at, created_at, updated_at) values (
-    '059b89cf-0417-4692-abdf-cb065496ea4c', 'email', '059b89cf-0417-4692-abdf-cb065496ea4c', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+insert into auth.identities (id, provider, user_id, identity_data,
+last_sign_in_at, created_at, updated_at) values (
+    '059b89cf-0417-4692-abdf-cb065496ea4c', 'email',
+    '059b89cf-0417-4692-abdf-cb065496ea4c', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
 );
 
-insert into auth.identities (id, provider, user_id, identity_data, last_sign_in_at, created_at, updated_at) values (
-    'e6058751-75dc-4831-b773-dd6e0c821963', 'email', 'e6058751-75dc-4831-b773-dd6e0c821963', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+insert into auth.identities (id, provider, user_id, identity_data,
+last_sign_in_at, created_at, updated_at) values (
+    'e6058751-75dc-4831-b773-dd6e0c821963', 'email',
+    'e6058751-75dc-4831-b773-dd6e0c821963', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
 );
 
-insert into auth.identities (id, provider, user_id, identity_data, last_sign_in_at, created_at, updated_at) values (
-    '2b4a6624-7118-4551-8f0f-6b753e32e139', 'email', '2b4a6624-7118-4551-8f0f-6b753e32e139', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+insert into auth.identities (id, provider, user_id, identity_data,
+last_sign_in_at, created_at, updated_at) values (
+    '2b4a6624-7118-4551-8f0f-6b753e32e139', 'email',
+    '2b4a6624-7118-4551-8f0f-6b753e32e139', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
 );

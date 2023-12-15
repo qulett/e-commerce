@@ -20,9 +20,9 @@ const SubscriptionCard: React.FC<{
 
   const dates = useMemo(() => {
     return {
-      endDate: new Date(subscription.periodEndsAt).toDateString(),
+      endDate: new Date(subscription.periodEndsAt).toLocaleDateString(),
       trialEndDate: subscription.trialEndsAt
-        ? new Date(subscription.trialEndsAt).toDateString()
+        ? new Date(subscription.trialEndsAt).toLocaleDateString()
         : null,
     };
   }, [subscription]);
@@ -78,7 +78,7 @@ function RenewStatusDescription(
       endDate: string;
       trialEndDate: string | null;
     };
-  }>
+  }>,
 ) {
   return (
     <span className={'flex items-center space-x-1.5 text-sm'}>
