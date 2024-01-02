@@ -90,6 +90,8 @@ jobs:
 
       - name: Supabase CLI
         uses: supabase/setup-cli@v1
+        with:
+          version: latest
 
       - name: Stop Supabase (if running)
         continue-on-error: true

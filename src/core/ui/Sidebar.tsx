@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useContext } from 'react';
+import React, { useContext, useId, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import classNames from 'clsx';
+import { cva } from 'cva';
+
 import { cn } from '~/core/generic/shadcn-utils';
 
-import { cva } from 'cva';
 import If from '~/core/ui/If';
 import { TooltipContent, Tooltip, TooltipTrigger } from '~/core/ui/Tooltip';
 import SidebarContext from '~/lib/contexts/sidebar';
-
 import isRouteActive from '~/core/generic/is-route-active';
 
 export function Sidebar({
@@ -33,10 +35,95 @@ export function SidebarContent({
 }>) {
   return (
     <div
-      className={cn('flex w-full flex-col space-y-1 px-container', className)}
+      className={cn('flex w-full flex-col px-container space-y-1.5', className)}
     >
       {children}
     </div>
+  );
+}
+
+export function SidebarGroup({
+  label,
+  collapsed = false,
+  collapsible = true,
+  children,
+}: React.PropsWithChildren<{
+  label: string | React.ReactNode;
+  collapsible?: boolean;
+  collapsed?: boolean;
+}>) {
+  const { collapsed: sidebarCollapsed } = useContext(SidebarContext);
+  const [isGroupCollapsed, setIsGroupCollapsed] = useState(collapsed);
+  const id = useId();
+
+  const Title = (props: React.PropsWithChildren) => {
+    if (sidebarCollapsed) {
+      return null;
+    }
+
+    return (
+      <span
+        className={
+          'text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'
+        }
+      >
+        {props.children}
+      </span>
+    );
+  };
+
+  const Wrapper = () => {
+    const className = classNames(
+      'group flex items-center justify-between px-container space-x-2.5',
+      {
+        'py-2.5': !sidebarCollapsed,
+      },
+    );
+
+    if (collapsible) {
+      return (
+        <button
+          aria-expanded={!isGroupCollapsed}
+          aria-controls={id}
+          onClick={() => setIsGroupCollapsed(!isGroupCollapsed)}
+          className={className}
+        >
+          <Title>{label}</Title>
+
+          <If condition={collapsible}>
+            <ChevronDownIcon
+              className={classNames(`transition duration-300 h-3`, {
+                'rotate-180': !isGroupCollapsed,
+              })}
+            />
+          </If>
+        </button>
+      );
+    }
+
+    return (
+      <div className={className}>
+        <Title>{label}</Title>
+      </div>
+    );
+  };
+
+  return (
+    <div className={'flex flex-col space-y-1 py-1'}>
+      <Wrapper />
+
+      <If condition={collapsible ? !isGroupCollapsed : true}>
+        <div id={id} className={'flex flex-col space-y-1.5'}>
+          {children}
+        </div>
+      </If>
+    </div>
+  );
+}
+
+export function SidebarDivider() {
+  return (
+    <div className={'border-t border-gray-100 dark:border-dark-800 my-2'} />
   );
 }
 
@@ -53,7 +140,7 @@ export function SidebarItem({
   const { collapsed } = useContext(SidebarContext);
 
   const currentPath = usePathname() ?? '';
-  const active = isRouteActive(path, currentPath, end ? 1 : 3);
+  const active = isRouteActive(path, currentPath, end ? 0 : 3);
 
   const className = getSidebarItemClassBuilder()({
     collapsed,
@@ -62,10 +149,10 @@ export function SidebarItem({
 
   return (
     <Link key={path} href={path} className={className}>
-      <If condition={collapsed} fallback={<Icon className={'h-6'} />}>
+      <If condition={collapsed} fallback={<Icon className={'h-5'} />}>
         <Tooltip>
           <TooltipTrigger>
-            <Icon className={'h-6'} />
+            <Icon className={'h-5'} />
           </TooltipTrigger>
 
           <TooltipContent side={'right'} sideOffset={20}>
@@ -84,14 +171,15 @@ export default Sidebar;
 function getClassNameBuilder() {
   return cva(
     [
-      'relative flex hidden h-screen flex-col border-r ' +
-        ' border-gray-100 dark:border-dark-800 lg:flex space-y-4',
+      'relative flex h-screen flex-col border-r border-gray-100' +
+        ' dark:border-dark-800 lg:flex ' +
+        'transition-[width] duration-100 motion-reduce:transition-none',
     ],
     {
       variants: {
         collapsed: {
-          true: `w-[5rem]`,
-          false: `w-2/12 max-w-xs sm:min-w-[12rem] lg:min-w-[17rem]`,
+          true: `w-[6rem]`,
+          false: `w-2/12 lg:w-[17rem]`,
         },
       },
     },
@@ -101,12 +189,12 @@ function getClassNameBuilder() {
 function getSidebarItemClassBuilder() {
   return cva(
     [
-      `flex w-full items-center rounded-md border-transparent text-sm font-base transition-colors duration-300`,
+      `flex w-full items-center rounded-md border-transparent text-sm font-base transition-colors duration-100`,
     ],
     {
       variants: {
         collapsed: {
-          true: `justify-center space-x-0 px-0.5 py-2 [&>span]:hidden`,
+          true: `justify-center py-2 [&>span]:hidden`,
           false: `py-2 px-3 pr-12 space-x-2.5`,
         },
         active: {

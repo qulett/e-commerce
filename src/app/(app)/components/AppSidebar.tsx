@@ -25,11 +25,11 @@ const AppSidebar = () => {
 
   return (
     <Sidebar collapsed={ctx.collapsed}>
-      <SidebarContent className={'pt-6 pb-3'}>
+      <SidebarContent className={'pt-6 pb-6'}>
         <LogoSection collapsed={ctx.collapsed} />
       </SidebarContent>
 
-      <SidebarContent>
+      <SidebarContent className={`h-[calc(100%-160px)] overflow-y-auto`}>
         <AppSidebarNavigation />
       </SidebarContent>
 

@@ -1,7 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import Bars3Icon from '@heroicons/react/24/outline/Bars3Icon';
+
+import {
+  ArrowLeftOnRectangleIcon,
+  Bars3Icon,
+} from '@heroicons/react/24/outline';
 
 import {
   DropdownMenu,
@@ -12,33 +16,46 @@ import {
 } from '~/core/ui/Dropdown';
 
 import NAVIGATION_CONFIG from '../navigation.config';
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import useSignOut from '~/core/hooks/use-sign-out';
 
-const MobileAppNavigation: React.FC = () => {
-  const Links = NAVIGATION_CONFIG.items.map((item) => {
-    return (
-      <DropdownMenuItem key={item.path}>
-        <Link
-          href={item.path}
-          className={'flex h-full w-full items-center space-x-4'}
-        >
-          <item.Icon className={'h-6'} />
+const MobileAppNavigation = () => {
+  const Links = NAVIGATION_CONFIG.items.map((item, index) => {
+    if ('children' in item) {
+      return item.children.map((child) => {
+        return (
+          <DropdownLink
+            key={child.path}
+            Icon={child.Icon}
+            path={child.path}
+            label={child.label}
+          />
+        );
+      });
+    }
 
-          <span>{item.label}</span>
-        </Link>
-      </DropdownMenuItem>
+    if ('divider' in item) {
+      return <DropdownMenuSeparator key={index} />;
+    }
+
+    return (
+      <DropdownLink
+        key={item.path}
+        Icon={item.Icon}
+        path={item.path}
+        label={item.label}
+      />
     );
   });
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Bars3Icon className={'h-8'} />
+        <Bars3Icon className={'h-9'} />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent sideOffset={10} className={'rounded-none w-screen'}>
         {Links}
+
         <DropdownMenuSeparator />
         <SignOutDropdownItem />
       </DropdownMenuContent>
@@ -48,6 +65,27 @@ const MobileAppNavigation: React.FC = () => {
 
 export default MobileAppNavigation;
 
+function DropdownLink(
+  props: React.PropsWithChildren<{
+    path: string;
+    label: string;
+    Icon: React.ElementType;
+  }>,
+) {
+  return (
+    <DropdownMenuItem asChild key={props.path}>
+      <Link
+        href={props.path}
+        className={'flex w-full items-center space-x-4 h-12'}
+      >
+        <props.Icon className={'h-6'} />
+
+        <span>{props.label}</span>
+      </Link>
+    </DropdownMenuItem>
+  );
+}
+
 function SignOutDropdownItem() {
   const signOut = useSignOut();
 
@@ -56,8 +94,9 @@ function SignOutDropdownItem() {
       className={'flex w-full items-center space-x-4 h-12'}
       onClick={signOut}
     >
-      <ArrowLeftOnRectangleIcon className={'h-5'} />
-      <span>Sign out</span>
+      <ArrowLeftOnRectangleIcon className={'h-6'} />
+
+      <span>Sign Out</span>
     </DropdownMenuItem>
   );
 }
