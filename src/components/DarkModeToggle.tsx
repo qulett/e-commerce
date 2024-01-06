@@ -54,6 +54,7 @@ const DarkModeToggle = () => {
     <Select value={currentTheme} onValueChange={setCurrentTheme}>
       <SelectTrigger asChild>
         <Button
+          aria-label={'Toggle dark mode'}
           variant={'ghost'}
           size={'icon'}
           type={'button'}
@@ -86,7 +87,10 @@ const DarkModeToggle = () => {
             </span>
           </SelectItem>
 
-          <SelectItem data-cy={'dark-theme-button'} value={DARK_THEME_CLASSNAME}>
+          <SelectItem
+            data-cy={'dark-theme-button'}
+            value={DARK_THEME_CLASSNAME}
+          >
             <span className={'flex items-center space-x-2.5'}>
               <MoonIcon className={'h-4'} />
 

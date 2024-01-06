@@ -5,7 +5,7 @@ function NewsletterSignup() {
   return (
     <div className={'flex flex-col space-y-4'}>
       <div>
-        <span className={'font-medium'}>Subscribe to our Newsletter</span>
+        <span className={'font-semibold'}>Subscribe to our Newsletter</span>
 
         <div className={'text-sm text-gray-500 dark:text-gray-400'}>
           Get the latest updates from our team.
