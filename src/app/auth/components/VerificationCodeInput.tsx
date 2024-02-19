@@ -1,3 +1,5 @@
+'use client';
+
 import type { FormEventHandler } from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -18,7 +20,7 @@ function VerificationCodeInput({
     [],
   );
 
-  const { control, register, watch, setFocus, formState } = useForm({
+  const { control, register, watch, setFocus, formState, setValue } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
@@ -33,20 +35,24 @@ function VerificationCodeInput({
   });
 
   const { values } = watch();
+  const isFormValid = formState.isValid;
+  const code = (values ?? []).map(({ value }) => value).join('');
 
   useEffect(() => {
-    if (!formState.isValid) {
+    if (!isFormValid) {
       onInvalid();
-    }
 
-    const code = (values ?? []).map((value) => value.value).join('');
+      return;
+    }
 
     if (code.length === DIGITS) {
       onValid(code);
-    } else {
-      onInvalid();
+
+      return;
     }
-  }, [onInvalid, onValid, values, formState.isValid]);
+
+    onInvalid();
+  }, [onInvalid, onValid, code, isFormValid]);
 
   useEffect(() => {
     setFocus('values.0.value');
@@ -70,9 +76,40 @@ function VerificationCodeInput({
     [setFocus],
   );
 
+  const onPaste = useCallback(
+    (event: React.ClipboardEvent<HTMLFormElement>) => {
+      const pasted = event.clipboardData.getData('text/plain');
+
+      // check if value is numeric
+      if (isNumeric(pasted)) {
+        const digits = getDigits(pasted, digitsArray);
+
+        digits.forEach((value, index) => {
+          setValue(`values.${index}.value`, value);
+          setFocus(`values.${index + 1}.value`);
+        });
+      }
+    },
+    [digitsArray, setFocus, setValue],
+  );
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Backspace') {
+        event.preventDefault();
+
+        const index = Number(event.currentTarget.dataset.inputIndex);
+
+        setValue(`values.${index}.value`, '');
+        setFocus(`values.${index - 1}.value`);
+      }
+    },
+    [setFocus, setValue],
+  );
+
   return (
     <div className={'flex justify-center space-x-2'}>
-      {digitsArray.map((digit) => {
+      {digitsArray.map((digit, index) => {
         const control = { ...register(`values.${digit}.value`) };
 
         return (
@@ -85,6 +122,9 @@ function VerificationCodeInput({
             key={digit}
             maxLength={1}
             onInput={onInput}
+            onPaste={onPaste}
+            onKeyDown={handleKeyDown}
+            data-input-index={index}
             {...control}
           />
         );
@@ -94,3 +134,13 @@ function VerificationCodeInput({
 }
 
 export default VerificationCodeInput;
+
+function isNumeric(pasted: string) {
+  const isNumericRegExp = /^-?\d+$/;
+
+  return isNumericRegExp.test(pasted);
+}
+
+function getDigits(pasted: string, digitsArray: number[]) {
+  return pasted.split('').slice(0, digitsArray.length);
+}
