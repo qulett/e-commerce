@@ -10,7 +10,6 @@ import useUpdateProfileMutation from '~/lib/user/hooks/use-update-profile';
 
 import Button from '~/core/ui/Button';
 import TextField from '~/core/ui/TextField';
-import ImageUploadInput from '~/core/ui/ImageUploadInput';
 
 import Modal from '~/core/ui/Modal';
 import useSupabase from '~/core/hooks/use-supabase';
@@ -18,6 +17,8 @@ import useSupabase from '~/core/hooks/use-supabase';
 import type UserSession from '~/core/session/types/user-session';
 import type UserData from '~/core/session/types/user-data';
 import AuthErrorMessage from '~/app/auth/components/AuthErrorMessage';
+import ImageUploader from '~/core/ui/ImageUploader';
+import { USERS_TABLE } from '~/lib/db-tables';
 
 function UpdateProfileForm({
   session,
@@ -27,62 +28,24 @@ function UpdateProfileForm({
   onUpdateProfileData: (user: Partial<UserData>) => void;
 }) {
   const updateProfileMutation = useUpdateProfileMutation();
-
-  const client = useSupabase();
   const currentPhotoURL = session.data?.photoUrl ?? '';
   const currentDisplayName = session?.data?.displayName ?? '';
 
   const user = session.auth?.user;
   const email = user?.email ?? '';
 
-  const { register, handleSubmit, reset, setValue, getValues } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       displayName: currentDisplayName,
       photoURL: '',
     },
   });
 
-  const onSubmit = async (displayName: string, photoFile: Maybe<File>) => {
-    const photoName = photoFile?.name;
-    const existingPhotoRemoved = getValues('photoURL') !== photoName;
-
-    let photoUrl = null;
-
-    // if photo is changed, upload the new photo and get the new url
-    if (photoName) {
-      photoUrl = await uploadUserProfilePhoto(client, photoFile, user.id);
-    }
-
-    // if photo is not changed, use the current photo url
-    if (!existingPhotoRemoved) {
-      photoUrl = currentPhotoURL;
-    }
-
-    let shouldRemoveAvatar = false;
-
-    // if photo is removed, set the photo url to null
-    if (!photoUrl) {
-      shouldRemoveAvatar = true;
-    }
-
-    if (photoFile && photoUrl && photoUrl !== currentPhotoURL) {
-      shouldRemoveAvatar = true;
-    }
-
+  const onSubmit = async (displayName: string) => {
     const info = {
       id: user.id,
       displayName,
-      photoUrl,
     };
-
-    // delete existing photo if different
-    if (shouldRemoveAvatar && currentPhotoURL) {
-      try {
-        await deleteProfilePhoto(client, currentPhotoURL);
-      } catch (e) {
-        // old photo not found
-      }
-    }
 
     const promise = updateProfileMutation.trigger(info).then(() => {
       onUpdateProfileData(info);
@@ -99,8 +62,6 @@ function UpdateProfileForm({
     value: currentDisplayName,
   });
 
-  const photoURLControl = register('photoURL');
-
   useEffect(() => {
     reset({
       displayName: currentDisplayName ?? '',
@@ -109,84 +70,133 @@ function UpdateProfileForm({
   }, [currentDisplayName, currentPhotoURL, reset]);
 
   return (
-    <>
+    <div className={'flex flex-col space-y-8'}>
+      <UploadProfileAvatarForm
+        currentPhotoURL={currentPhotoURL}
+        userId={user?.id}
+        onAvatarUpdated={(photoUrl) => onUpdateProfileData({ photoUrl })}
+      />
+
       <form
         data-cy={'update-profile-form'}
         onSubmit={handleSubmit((value) => {
-          return onSubmit(value.displayName, getPhotoFile(value.photoURL));
+          return onSubmit(value.displayName);
         })}
+        className={'flex flex-col space-y-4'}
       >
-        <div className={'flex flex-col space-y-4'}>
-          <TextField>
-            <TextField.Label>
-              Display Name
-              <TextField.Input
-                {...displayNameControl}
-                data-cy={'profile-display-name'}
-                minLength={2}
-                placeholder={''}
-              />
-            </TextField.Label>
-          </TextField>
+        <TextField>
+          <TextField.Label>
+            Display Name
+            <TextField.Input
+              {...displayNameControl}
+              data-cy={'profile-display-name'}
+              minLength={2}
+              placeholder={''}
+            />
+          </TextField.Label>
+        </TextField>
 
-          <TextField>
-            <TextField.Label>
-              Profile Photo
-              <ImageUploadInput
-                {...photoURLControl}
-                multiple={false}
-                onClear={() => setValue('photoURL', '')}
-                image={currentPhotoURL}
-              >
-                Click here to upload an image
-              </ImageUploadInput>
-            </TextField.Label>
-          </TextField>
-
-          <TextField>
-            <TextField.Label>
-              Email
-              <TextField.Input disabled value={email} />
-            </TextField.Label>
-
-            <div>
-              <Button
-                type={'button'}
-                variant={'ghost'}
-                size={'small'}
-                href={configuration.paths.settings.email}
-              >
-                <span className={'text-xs font-normal'}>Update Email</span>
-              </Button>
-            </div>
-          </TextField>
+        <TextField>
+          <TextField.Label>
+            Email
+            <TextField.Input disabled value={email} />
+          </TextField.Label>
 
           <div>
             <Button
-              className={'w-full md:w-auto'}
-              loading={updateProfileMutation.isMutating}
+              type={'button'}
+              variant={'ghost'}
+              size={'small'}
+              href={configuration.paths.settings.email}
             >
-              Update Profile
+              <span className={'text-xs font-normal'}>Update Email</span>
             </Button>
           </div>
+        </TextField>
+
+        <div>
+          <Button
+            className={'w-full md:w-auto'}
+            loading={updateProfileMutation.isMutating}
+          >
+            Update Profile
+          </Button>
         </div>
       </form>
-    </>
+    </div>
   );
 }
 
-/**
- * @name getPhotoFile
- * @param value
- * @description Returns the file of the photo when submitted
- * It returns undefined when the user hasn't selected a file
- */
-function getPhotoFile(value: string | null | FileList) {
-  if (!value || typeof value === 'string') {
-    return;
-  }
+function UploadProfileAvatarForm(props: {
+  currentPhotoURL: string | null;
+  userId: string;
+  onAvatarUpdated: (url: string | null) => void;
+}) {
+  const client = useSupabase();
 
-  return value.item(0) ?? undefined;
+  const onValueChange = useCallback(
+    async (file: File | null) => {
+      if (file) {
+        const promise = uploadUserProfilePhoto(client, file, props.userId).then(
+          (photoUrl) => {
+            props.onAvatarUpdated(photoUrl);
+
+            return client
+              .from(USERS_TABLE)
+              .update({
+                photo_url: photoUrl,
+              })
+              .eq('id', props.userId)
+              .throwOnError();
+          },
+        );
+
+        toast.promise(promise, {
+          loading: `Updating avatar...`,
+          success: `Avatar successfully updated`,
+          error: `Error updating avatar`,
+        });
+      } else {
+        if (props.currentPhotoURL) {
+          const promise = deleteProfilePhoto(
+            client,
+            props.currentPhotoURL,
+          )?.then(() => {
+            props.onAvatarUpdated(null);
+
+            return client
+              .from(USERS_TABLE)
+              .update({
+                photo_url: null,
+              })
+              .eq('id', props.userId)
+              .throwOnError();
+          });
+
+          if (promise) {
+            toast.promise(promise, {
+              loading: `Updating avatar...`,
+              success: `Avatar successfully updated`,
+              error: `Error updating avatar`,
+            });
+          }
+        }
+      }
+    },
+    [client, props],
+  );
+
+  return (
+    <ImageUploader value={props.currentPhotoURL} onValueChange={onValueChange}>
+      <div className={'flex flex-col space-y-1'}>
+        <span className={'text-sm'}>Upload your avatar picture</span>
+
+        <span className={'text-xs'}>
+          Please choose an image to upload as your profile picture.
+        </span>
+      </div>
+    </ImageUploader>
+  );
 }
 
 async function uploadUserProfilePhoto(

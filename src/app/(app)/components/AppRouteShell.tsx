@@ -46,7 +46,7 @@ const RouteShell: React.FCC<{
             whenSignedOut={'/'}
           >
             <main>
-              <Toaster />
+              <Toaster richColors={false} />
 
               <RouteShellWithSidebar
                 collapsed={data.ui.sidebarState === 'collapsed'}

@@ -10,7 +10,7 @@ function AdminProviders(
 ) {
   return (
     <CsrfTokenContext.Provider value={props.csrfToken}>
-      <Toaster />
+      <Toaster richColors={false} />
       {props.children}
     </CsrfTokenContext.Provider>
   );
