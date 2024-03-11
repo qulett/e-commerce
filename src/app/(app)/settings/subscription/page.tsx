@@ -15,7 +15,7 @@ const SubscriptionSettingsPage = () => {
         description={'Manage your Subscription and Billing'}
       />
 
-      <SectionBody className={'space-y-4'}>
+      <SectionBody className={'space-y-4 !px-0'}>
         <PlansStatusAlertContainer />
 
         <Plans />

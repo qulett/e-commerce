@@ -5,11 +5,11 @@ import dynamic from 'next/dynamic';
 
 import PricingTable from '~/components/PricingTable';
 import CheckoutRedirectButton from '../components/CheckoutRedirectButton';
-import BillingPortalRedirectButton from '../components/BillingRedirectButton';
 
 import Button from '~/core/ui/Button';
 import ErrorBoundary from '~/core/ui/ErrorBoundary';
 import If from '~/core/ui/If';
+import BillingPortalRedirectButton from '~/app/(app)/settings/subscription/components/BillingRedirectButton';
 
 const EmbeddedStripeCheckout = dynamic(
   () => import('./EmbeddedStripeCheckout'),
@@ -55,9 +55,11 @@ const PlanSelectionForm: React.FCC<{
         />
 
         <If condition={customerId}>
-          <div className={'flex flex-col space-y-2'}>
+          <div className={'flex flex-col items-center space-y-4'}>
+            <div>or</div>
+
             <BillingPortalRedirectButton customerId={customerId as string}>
-              Manage Billing
+              Go to Customer Portal
             </BillingPortalRedirectButton>
 
             <span className={'text-xs text-gray-500 dark:text-gray-400'}>

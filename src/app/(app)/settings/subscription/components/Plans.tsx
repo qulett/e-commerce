@@ -18,19 +18,30 @@ const Plans = () => {
 
   return (
     <div className={'flex flex-col space-y-4'}>
-      <SubscriptionCard subscription={subscription} />
+      <div>
+        <div
+          className={'border w-full lg:w-9/12 xl:w-6/12 rounded-xl divide-y'}
+        >
+          <div className={'p-6'}>
+            <SubscriptionCard subscription={subscription} />
+          </div>
 
-      <If condition={customerId}>
-        <div className={'flex flex-col space-y-2'}>
-          <BillingPortalRedirectButton customerId={customerId as string}>
-            Manage Billing
-          </BillingPortalRedirectButton>
+          <div className={'flex justify-end p-6'}>
+            <If condition={customerId}>
+              <div className={'flex flex-col space-y-2 items-end'}>
+                <BillingPortalRedirectButton customerId={customerId as string}>
+                  Go to Customer Portal
+                </BillingPortalRedirectButton>
 
-          <span className={'text-xs text-gray-500 dark:text-gray-400'}>
-            Visit your Customer Portal to manage your subscription and billing.
-          </span>
+                <span className={'text-xs text-gray-500 dark:text-gray-400'}>
+                  Visit your Customer Portal to manage your subscription and
+                  billing.
+                </span>
+              </div>
+            </If>
+          </div>
         </div>
-      </If>
+      </div>
     </div>
   );
 };
