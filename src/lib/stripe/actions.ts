@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { join } from 'path';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
+
 import { RedirectType } from 'next/dist/client/components/redirect';
 
 import getLogger from '~/core/logger';
@@ -89,6 +91,9 @@ export const createCheckoutAction = withSession(
     if (!session) {
       return redirectToErrorPage(`An unexpected error occurred`);
     }
+
+    // revalidate the cache
+    revalidatePath('/', 'layout');
 
     logger.info(
       {

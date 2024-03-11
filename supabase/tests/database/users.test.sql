@@ -13,12 +13,11 @@ select
 $$,
 'can create an auth user');
 
-\echo Test that a USER cannot be created WHEN anonymous
-set LOCAL role anon;
+set LOCAL role authenticated;
 
 select
-  throws_ok ($$ insert into users (id, onboarded)
-      values ('0414aff1-834d-4613-9c93-1b45ec9ddea1', true);
+  throws_ok ($$ insert into users (id)
+      values ('0414aff1-834d-4613-9c93-1b45ec9ddea1');
 
 $$,
 'new row violates row-level security policy for table "users"',

@@ -1,15 +1,12 @@
 begin;
 
 select
-  plan (4);
+  plan (3);
 
 set LOCAL search_path = core, PUBLIC, extensions;
 
 select
-  has_table ('organizations');
-
-select
-  has_table ('memberships');
+  has_table ('customers_subscriptions');
 
 select
   has_table ('users');
