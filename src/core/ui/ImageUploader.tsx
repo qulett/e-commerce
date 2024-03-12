@@ -46,6 +46,7 @@ function ImageUploader(
   const Input = () => (
     <ImageUploadInput
       {...control}
+      accept={'image/*'}
       className={'absolute w-full h-full'}
       visible={false}
       multiple={false}
