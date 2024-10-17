@@ -155,3 +155,4 @@ async function onCheckoutCompleted(
 function getUserIdFromClientReference(session: Stripe.Checkout.Session) {
   return session.client_reference_id as string;
 }
+//demo push
