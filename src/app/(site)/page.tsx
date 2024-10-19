@@ -26,13 +26,14 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="flex flex-row gap-4 md: justify-center flex-wrap">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index}>
-              <div className="p-4 rounded-lg shadow-lg flex flex-col space-y-2">
-                <div className="bg-black h-24">Image</div>
-                <div className="font-bold">True Wireless Earbuds</div>
-              </div>
+            <div
+              key={index}
+              className="p-4 rounded-lg shadow-lg flex flex-col space-y-2 bg-white"
+            >
+              <div className="bg-black h-24">Image</div>
+              <div className="font-bold">True Wireless Earbuds</div>
             </div>
           ))}
         </div>
