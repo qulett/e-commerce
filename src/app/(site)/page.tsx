@@ -19,6 +19,39 @@ export default function Home() {
 
       <Container>
         <div className="flex flex-row justify-between mb-4">
+          <Heading type={3}>Top Picks For You</Heading>
+          <Button variant={'link'}>
+            View All
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
+          {Array.from({ length: 12 }).map((_, index) => (
+            <div
+              key={index}
+              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"
+            >
+              <div className="bg-black h-24">Image</div>
+              <div className="font-bold px-2">True Wireless Earbuds</div>
+              <div className="flex flex-row px-2 justify-between items-center">
+                <div className="flex flex-col">
+                  <div className="text-base font-bold">Rs. 2,229</div>
+                  <div className="text-sm text-green-600 font-semibold">
+                    20%off
+                  </div>
+                </div>
+                <Button size={'sm'} className="h-8">
+                  Buy Now
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+
+      <Container>
+        <div className="flex flex-row justify-between mb-4">
           <Heading type={3}>Shop by Categories</Heading>
           <Button variant={'link'}>
             View All
@@ -30,7 +63,7 @@ export default function Home() {
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4"
+              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"
             >
               <div className="bg-black h-24">Image</div>
               <div className="font-bold text-center">True Wireless Earbuds</div>
@@ -40,7 +73,7 @@ export default function Home() {
       </Container>
 
       <Container>
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between mb-4">
           <Heading type={3}>Explore Bestsellers</Heading>
           <Button variant={'link'}>
             View All
@@ -48,12 +81,15 @@ export default function Home() {
           </Button>
         </div>
         <ScrollArea className="w-full">
-          <div className="flex flex-row gap-4 p-4 ">
+          <div className="flex flex-row gap-4  ">
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index}>
-                <div className="p-4 rounded-lg shadow-lg flex flex-col space-y-2">
-                  <div className="bg-black h-60 w-60">Image</div>
-                  <div className="font-bold text-center">Wireless Earbuds</div>
+              <div
+                key={index}
+                className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"
+              >
+                <div className="bg-black h-60 w-60">Image</div>
+                <div className="font-bold text-center">
+                  True Wireless Earbuds
                 </div>
               </div>
             ))}
