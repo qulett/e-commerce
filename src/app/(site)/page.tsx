@@ -10,7 +10,7 @@ import { ScrollArea, ScrollBar } from '~/core/ui/scroll-area';
 
 export default function Home() {
   return (
-    <div className={'flex flex-col space-y-16'}>
+    <div className={'flex flex-col space-y-16 bg-gray-100'}>
       <Container>
         <div className="mt-4">
           <CarouselSection />
@@ -18,7 +18,7 @@ export default function Home() {
       </Container>
 
       <Container>
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between mb-4">
           <Heading type={3}>Shop by Categories</Heading>
           <Button variant={'link'}>
             View All
@@ -30,7 +30,7 @@ export default function Home() {
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className="p-4 rounded-lg shadow-lg flex flex-col space-y-2 bg-white"
+              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4"
             >
               <div className="bg-black h-24">Image</div>
               <div className="font-bold text-center">True Wireless Earbuds</div>
