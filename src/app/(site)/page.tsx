@@ -10,12 +10,10 @@ import { ScrollArea, ScrollBar } from '~/core/ui/scroll-area';
 
 export default function Home() {
   return (
-    <div className={'flex flex-col space-y-16 bg-gray-100'}>
-      <Container>
-        <div className="mt-4">
-          <CarouselSection />
-        </div>
-      </Container>
+    <div className={'flex flex-col space-y-16'}>
+      <div className="mt-4">
+        <CarouselSection />
+      </div>
 
       <Container>
         <div className="flex flex-row justify-between mb-4">
@@ -26,17 +24,21 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
+        <div className="grid grid-cols-2 md:grid-cols-4  gap-4 justify-center">
           {Array.from({ length: 12 }).map((_, index) => (
             <div
               key={index}
               className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"
             >
-              <div className="bg-black h-24">Image</div>
-              <div className="font-bold px-2">True Wireless Earbuds</div>
+              <div className="bg-black h-24 md:h-36">Image</div>
+              <div className="text-sm md:text-base font-bold px-2">
+                True Wireless Earbuds
+              </div>
               <div className="flex flex-row px-2 justify-between items-center">
                 <div className="flex flex-col">
-                  <div className="text-base font-bold">Rs. 2,229</div>
+                  <div className="text-sm md:text-base font-bold">
+                    Rs. 2,229
+                  </div>
                   <div className="text-sm text-green-600 font-semibold">
                     20%off
                   </div>
@@ -82,7 +84,7 @@ export default function Home() {
         </div>
         <ScrollArea className="w-full">
           <div className="flex flex-row gap-4  ">
-            {Array.from({ length: 5 }).map((_, index) => (
+            {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
                 className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"

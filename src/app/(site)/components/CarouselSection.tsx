@@ -24,14 +24,14 @@ const CarouselSection = () => {
         <CarouselContent>
           {Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem key={index}>
-              <div className="p-1 rounded-lg bg-red-200 h-80">
+              <div className="p-1 rounded-lg bg-red-200 h-96">
                 Hello+ {index}
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
         <CarouselPrevious className="hidden md:block" />
-        <CarouselNext className="hidden md:block" />
+        <CarouselNext className="hidden md:block " />
       </Carousel>
     </div>
   );

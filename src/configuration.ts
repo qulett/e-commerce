@@ -24,7 +24,7 @@ const configuration = {
   auth: {
     // ensure this is the same as your Supabase project. By default - it's true
     requireEmailConfirmation:
-      process.env.NEXT_PUBLIC_REQUIRE_EMAIL_CONFIRMATION === 'true',
+      process.env.NEXT_PUBLIC_REQUIRE_EMAIL_CONFIRMATION === 'false',
     // NB: Enable the providers below in the Supabase Console
     // in your production project
     providers: {
@@ -38,7 +38,7 @@ const configuration = {
   production,
   environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
   features: {
-    enableThemeSwitcher: true,
+    enableThemeSwitcher: false,
     enableAccountDeletion:
       process.env.NEXT_PUBLIC_ENABLE_ACCOUNT_DELETION === 'true',
   },
