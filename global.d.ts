@@ -12,14 +12,14 @@ declare global {
   type Truthy<T> = false extends T
     ? never
     : 0 extends T
-    ? never
-    : '' extends T
-    ? never
-    : null extends T
-    ? never
-    : undefined extends T
-    ? never
-    : T;
+      ? never
+      : '' extends T
+        ? never
+        : null extends T
+          ? never
+          : undefined extends T
+            ? never
+            : T;
 
   type Falsy = false | 0 | '' | null | undefined;
   type Maybe<T> = T | undefined;
@@ -27,23 +27,6 @@ declare global {
   type EmptyCallback = () => void;
 
   type HttpMethod = `GET` | `POST` | `PUT` | 'PATCH' | 'DELETE' | 'HEAD';
-
-  namespace Cypress {
-    interface Chainable {
-      cyGet(name: string): Chainable<JQuery>;
-
-      signIn(
-        redirectPath?: string,
-        credentials?: { email: string; password: string }
-      ): void;
-
-      clearStorage(): void;
-
-      signOutSession(): void;
-
-      resetDatabase(): void;
-    }
-  }
 }
 
 declare module 'react' {
