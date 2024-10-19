@@ -6,30 +6,38 @@ import {
   throwInternalServerErrorException,
 } from '~/core/http-exceptions';
 import { client } from '../supabaseClient';
-// create an normal client to write to the subscriptions table
+import { uploadBase64Image } from '../utils/fileUpload';
 
 const logger = getLogger();
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { id, photo_url, display_name, price, qty, description } = body;
+    const { photo_url, display_name, price, qty, description } = body;
+    let fileName = new Date().toISOString();
 
     // Validate input
-    if (!id || !photo_url || !display_name || price == null || qty == null) {
+    if (!photo_url || !display_name || price == null || qty == null) {
       return throwInternalServerErrorException(`Missing required fields`);
     }
-
+    let urlData = await uploadBase64Image(
+      photo_url,
+      'avatars/products',
+      fileName,
+    );
     // Insert data into the products table
     const { data, error } = await client
       .from('products')
-      .insert([{ id, photo_url, display_name, price, qty, description }]);
+      .insert([{ photo_url: urlData, display_name, price, qty, description }]);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: data }, { status: 201 });
+    return NextResponse.json(
+      { data: 'product added successfully' },
+      { status: 201 },
+    );
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }
@@ -48,7 +56,24 @@ export async function GET(request: Request) {
     const minPriceRange = queryParams.get('minPriceRange');
     const maxPriceRange = queryParams.get('maxPriceRange');
 
-    const { data, error } = await client.from('products').select('*');
+    // Build query based on provided filters
+    let query = client.from('products').select('*');
+
+    if (category) query = query.eq('category', category);
+    if (bestseller) query = query.eq('best_seller', bestseller === 'true');
+    if (rating) query = query.gte('rating', parseFloat(rating));
+    if (brand) query = query.ilike('brand', `%${brand}%`);
+    if (name) query = query.ilike('display_name', `%${name}%`);
+    if (priceFilter) query = query.order('price', { ascending: true });
+
+    // Handle price filtering
+    if (minPriceRange && maxPriceRange) {
+      query = query
+        .gte('price', parseFloat(minPriceRange))
+        .lte('price', parseFloat(maxPriceRange));
+    }
+
+    const { data, error } = await query;
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
