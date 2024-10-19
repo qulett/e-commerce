@@ -33,7 +33,7 @@ export default function Home() {
               className="p-4 rounded-lg shadow-lg flex flex-col space-y-2 bg-white"
             >
               <div className="bg-black h-24">Image</div>
-              <div className="font-bold">True Wireless Earbuds</div>
+              <div className="font-bold text-center">True Wireless Earbuds</div>
             </div>
           ))}
         </div>
