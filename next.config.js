@@ -16,11 +16,12 @@ module.exports = withAnalyzer({
 
 function getRemotePatterns() {
   // add here the remote patterns for your images
+
   const remotePatterns = [
     {
       protocol: 'https',
       hostname: 'cdn.dummyjson.com',
-      pathname: '/**', 
+      pathname: '/**',
     },
   ];
 
