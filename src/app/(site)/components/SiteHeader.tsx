@@ -26,7 +26,7 @@ const SiteHeader: React.FCC = () => {
           <Logo />
         </div>
 
-        <div className={'w-4/12 hidden lg:flex justify-center'}>
+        <div className={'w-5/12 hidden lg:flex justify-center'}>
           <SiteNavigation />
         </div>
 
