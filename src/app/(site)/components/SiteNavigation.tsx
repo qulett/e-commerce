@@ -10,6 +10,8 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from '~/core/ui/Dropdown';
+import { useEffect, useState } from 'react';
+import CategoryPopup from './CategoryPopup';
 
 const links = {
   SignIn: {
@@ -32,10 +34,46 @@ const links = {
     label: 'FAQ',
     path: '/faq',
   },
+  Products: {
+    label: 'Products',
+    path: '/products',
+  },
+  Categories: {
+    label: 'Categories',
+    path: '',
+  },
 };
+interface CategoryProps{
+  name:string;
+  slug:string;
+}
 
 const SiteNavigation = () => {
   const className = 'font-semibold';
+
+    const [categories,setCategories]=useState<CategoryProps[]>([])
+    const [isPopupOpen, setPopupOpen] = useState(false);
+
+    const fetchProducts = async () => {
+        try {
+          const response = await fetch(`https://dummyjson.com/products/categories`); 
+          if (!response.ok) {
+            throw new Error('Failed to fetch products');
+          }
+          const data = await response.json();
+          setCategories(data);
+        } catch (error: any) {
+          console.log(error)
+        }
+      };
+    
+      useEffect(()=>{
+          fetchProducts();
+      },[])
+    
+  const togglePopup = () => {
+    setPopupOpen(!isPopupOpen);
+  };
 
   return (
     <>
@@ -49,9 +87,25 @@ const SiteNavigation = () => {
           <NavigationMenuItem className={className} link={links.Blog} />
           <NavigationMenuItem className={className} link={links.Docs} />
           <NavigationMenuItem className={className} link={links.Pricing} />
+          <NavigationMenuItem className={className} link={links.Products} />
+           {/* Categories dropdown */}
+           <DropdownMenu>
+            <DropdownMenuTrigger className={className} onClick={togglePopup}>
+            <NavigationMenuItem className={className} link={links.Categories} />
+            </DropdownMenuTrigger>
+          </DropdownMenu>
+
           <NavigationMenuItem className={className} link={links.FAQ} />
         </NavigationMenu>
       </div>
+
+{/* Category popup */}
+      {isPopupOpen && (
+        <CategoryPopup 
+          categories={categories} 
+          onClose={togglePopup} 
+        />
+      )}
 
       <div className={'flex items-center lg:hidden'}>
         <MobileDropdown />
