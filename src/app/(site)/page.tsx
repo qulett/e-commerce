@@ -10,7 +10,7 @@ import { ScrollArea, ScrollBar } from '~/core/ui/scroll-area';
 
 export default function Home() {
   return (
-    <div className={'flex flex-col space-y-16'}>
+    <div className={'flex flex-col space-y-16 bg-primary-100'}>
       <div className="mt-4">
         <CarouselSection />
       </div>
@@ -28,7 +28,7 @@ export default function Home() {
           {Array.from({ length: 12 }).map((_, index) => (
             <div
               key={index}
-              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"
+              className=" rounded-lg  shadow-lg flex flex-col space-y-2 bg-gray-100 overflow-hidden pb-4 "
             >
               <div className="bg-black h-24 md:h-36">Image</div>
               <div className="text-sm md:text-base font-bold px-2">
@@ -65,7 +65,7 @@ export default function Home() {
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"
+              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 "
             >
               <div className="bg-black h-24">Image</div>
               <div className="font-bold text-center">True Wireless Earbuds</div>
@@ -82,12 +82,12 @@ export default function Home() {
             <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
-        <ScrollArea className="w-full">
+        <ScrollArea className="w-full ">
           <div className="flex flex-row gap-4  ">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 border"
+                className=" rounded-lg shadow-lg  mb-4 flex flex-col space-y-2 bg-white overflow-hidden pb-4 "
               >
                 <div className="bg-black h-60 w-60">Image</div>
                 <div className="font-bold text-center">
@@ -96,7 +96,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="horizontal" className="" />
         </ScrollArea>
       </Container>
 
