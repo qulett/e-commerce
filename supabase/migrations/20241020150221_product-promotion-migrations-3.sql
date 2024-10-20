@@ -1,6 +1,7 @@
 drop table if exists products_response;
 drop table if exists products;
 drop table if exists promotion;
+drop table if exists categories;
 
 create table categories (
   id serial primary key,
