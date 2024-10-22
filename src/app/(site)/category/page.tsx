@@ -2,12 +2,8 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import Container from '~/core/ui/Container';
+import { CategoryProps } from '~/lib/interfaces/products';
 
-
-interface CategoryProps{
-    name:string;
-    slug:string;
-}
 
 const Categories = () => {
 
