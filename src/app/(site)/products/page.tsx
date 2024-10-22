@@ -2,49 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import Container from '~/core/ui/Container';
 import ProductCard from '../components/ProductCard';
+import { Product } from '~/lib/interfaces/products';
 
-
-type Dimensions = {
-  width: number;
-  height: number;
-  depth: number;
-};
-
-type Meta = {
-  createdAt: string;
-  updatedAt: string;
-};
-
-type Review = {
-  rating: number;
-  comment: string;
-  date: string;
-};
-
-type Product = {
-  id: number;
-  title: string;
-  price: number;
-  discountPercentage: number;
-  description: string;
-  category: string;
-  brand: string;
-  availabilityStatus: string;
-  minimumOrderQuantity: number;
-  dimensions: Dimensions;
-  weight: number;
-  rating: number;
-  stock: number;
-  shippingInformation: string;
-  returnPolicy: string;
-  warrantyInformation: string;
-  sku: string;
-  tags: string[];
-  thumbnail: string;
-  images: string[];
-  reviews: Review[];
-  meta: Meta;
-};
 
 const Products = () => {
 
@@ -76,7 +35,7 @@ const Products = () => {
     <div className='py-5 text-2xl font-semibold'>
     <h1>All Products</h1>
     </div>
-    <div className="grid grid-cols-2 md:grid-cols-4  gap-4 justify-center">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-4 justify-center">
       {
        products && products.map((item,i)=>(
           <ProductCard

@@ -1,17 +1,24 @@
 import Link from 'next/link';
 import Bars3Icon from '@heroicons/react/24/outline/Bars3Icon';
 
-import NavigationMenuItem from '~/core/ui/Navigation/NavigationItem';
-import NavigationMenu from '~/core/ui/Navigation/NavigationMenu';
-
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenu,
   DropdownMenuTrigger,
 } from '~/core/ui/Dropdown';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CategoryPopup from './CategoryPopup';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from '~/components/ui/navigation-menu';
+import { cn } from '~/core/generic/shadcn-utils';
 
 const links = {
   SignIn: {
@@ -52,7 +59,6 @@ const SiteNavigation = () => {
   const className = 'font-semibold';
 
   const [categories, setCategories] = useState<CategoryProps[]>([]);
-  const [isPopupOpen, setPopupOpen] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -71,21 +77,16 @@ const SiteNavigation = () => {
     fetchProducts();
   }, []);
 
-  const togglePopup = () => {
-    setPopupOpen(!isPopupOpen);
-  };
-
   return (
     <>
       <div className={'hidden items-center space-x-0.5 lg:flex'}>
-        <NavigationMenu>
+        {/* <NavigationMenu>
           <NavigationMenuItem
             className={'flex lg:hidden'}
             link={links.SignIn}
           />
 
           <NavigationMenuItem className={className} link={links.Products} />
-          {/* Categories dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger className={className} onClick={togglePopup}>
               <NavigationMenuItem
@@ -94,13 +95,37 @@ const SiteNavigation = () => {
               />
             </DropdownMenuTrigger>
           </DropdownMenu>
+        </NavigationMenu> */}
+
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link href="/products" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Products
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+              <NavigationMenuContent className=''>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-6 lg:w-[1000px] ">
+              {categories.map((item,i) => (
+                <ListItem
+                  key={i}
+                  title={item.name}
+                  href={`/category/${item.slug}`}
+                >
+                  This is the categories
+                </ListItem>
+              ))}
+            </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
         </NavigationMenu>
       </div>
-
-      {/* Category popup */}
-      {isPopupOpen && (
-        <CategoryPopup categories={categories} onClose={togglePopup} />
-      )}
 
       <div className={'flex items-center lg:hidden'}>
         <MobileDropdown />
@@ -132,5 +157,34 @@ function MobileDropdown() {
     </DropdownMenu>
   );
 }
+
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  )
+})
+ListItem.displayName = "ListItem"
+
+
 
 export default SiteNavigation;

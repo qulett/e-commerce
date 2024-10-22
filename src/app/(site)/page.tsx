@@ -1,3 +1,4 @@
+'use client';
 import Container from '~/core/ui/Container';
 import Divider from '~/core/ui/Divider';
 import Heading from '~/core/ui/Heading';
@@ -7,8 +8,38 @@ import CarouselSection from './components/CarouselSection';
 import Button from '~/core/ui/Button';
 import { ChevronRight } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '~/core/ui/scroll-area';
+import { useEffect, useState } from 'react';
+import { CategoryProps } from '~/lib/interfaces/products';
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
+  const [categories, setCategories] = useState<CategoryProps[]>([]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`https://dummyjson.com/products/categories`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      setCategories(data);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const categoryImages = [
+    '/images/image1.jpg', // Path to your first static image
+    '/images/image2.jpg', // Path to your second static image
+    '/images/image3.jpg', // Path to your third static image
+    '/images/image4.jpg', // Path to your fourth static image
+  ];
+
   return (
     <div className={'flex flex-col space-y-16 bg-primary-100'}>
       <div className="mt-4">
@@ -61,17 +92,31 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div
-              key={index}
-              className=" rounded-lg shadow-lg flex flex-col space-y-2 bg-white overflow-hidden pb-4 "
-            >
-              <div className="bg-black h-24">Image</div>
-              <div className="font-bold text-center">True Wireless Earbuds</div>
-            </div>
-          ))}
-        </div>
+        <ScrollArea className="w-full">
+          <div className="flex flex-row gap-4">
+            {categories &&
+              categories.map((item, i) => (
+                <Link
+                  href={`/category/${item.slug}`}
+                  key={i}
+                  className=" rounded-lg shadow-lg space-y-2 flex flex-col mb-4 bg-white pb-4 w-60 h-60"
+                >
+                  <div className="relative h-80 w-full">
+                    <Image
+                      src="/assets/images/posts/lorem-ipsum.webp" 
+                      alt="category-img"
+                      fill 
+                      objectFit="cover" 
+                      className="rounded-t-lg"
+                    />
+                  </div>
+
+                  <div className="font-bold text-center">{item.name}</div>
+                </Link>
+              ))}
+          </div>
+          <ScrollBar orientation="horizontal" className="" />
+        </ScrollArea>
       </Container>
 
       <Container>
