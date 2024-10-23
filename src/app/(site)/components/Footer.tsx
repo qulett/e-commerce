@@ -4,6 +4,7 @@ import Container from '~/core/ui/Container';
 import LogoImage from '~/core/ui/Logo/LogoImage';
 import configuration from '~/configuration';
 import NewsletterSignup from '~/app/(site)/components/NewsletterSignup';
+import Heading from '~/core/ui/Heading';
 
 const YEAR = new Date().getFullYear();
 
@@ -20,12 +21,14 @@ function Footer() {
           >
             <div className={'flex flex-col space-y-4'}>
               <div>
-                <LogoImage className={'w-[85px] md:w-[115px]'} />
+                <Heading type={1} className="text-primary">
+                  {configuration.site.name}
+                </Heading>
               </div>
 
               <div>
                 <p className={'text-sm text-gray-500 dark:text-gray-400'}>
-                  Add a short tagline about your product
+                  {configuration.site.description}
                 </p>
               </div>
 
