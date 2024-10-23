@@ -103,10 +103,10 @@ export default function Home() {
                 >
                   <div className="relative h-80 w-full">
                     <Image
-                      src="/assets/images/posts/lorem-ipsum.webp" 
+                      src="/assets/images/posts/lorem-ipsum.webp"
                       alt="category-img"
-                      fill 
-                      objectFit="cover" 
+                      fill
+                      objectFit="cover"
                       className="rounded-t-lg"
                     />
                   </div>
@@ -143,32 +143,6 @@ export default function Home() {
           </div>
           <ScrollBar orientation="horizontal" className="" />
         </ScrollArea>
-      </Container>
-
-      <Divider />
-
-      <Container>
-        <div
-          className={
-            'flex flex-col items-center justify-center py-16 space-y-16'
-          }
-        >
-          <div className={'flex flex-col items-center space-y-8 text-center'}>
-            <div className={'flex flex-col space-y-2.5'}>
-              <Heading type={2}>
-                Ready to take your SaaS business to the next level?
-              </Heading>
-
-              <SubHeading as={'h3'}>
-                Get started on our free plan and upgrade when you are ready.
-              </SubHeading>
-            </div>
-          </div>
-
-          <div className={'w-full'}>
-            <PricingTable />
-          </div>
-        </div>
       </Container>
     </div>
   );
