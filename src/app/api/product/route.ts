@@ -14,35 +14,31 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const {
-      photo_url,
-      display_name,
+      name,
       price,
-      qty,
+      quantity,
       description,
       category_id,
-      brand,
     } = body;
     let fileName = new Date().toISOString();
 
     // Validate input
-    if (!photo_url || !display_name || price == null || qty == null) {
+    if (!description || !name ||!category_id || price == null || quantity == null) {
       return throwInternalServerErrorException(`Missing required fields`);
     }
-    let urlData = await uploadBase64Image(
-      photo_url,
-      'avatars/products',
-      fileName,
-    );
+    // let urlData = await uploadBase64Image(
+    //   photo_url,
+    //   'avatars/products',
+    //   fileName,
+    // );
     // Insert data into the products table
     const { data, error } = await client.from('products').insert([
       {
-        photo_url: urlData,
-        display_name,
+        name,
         price,
-        qty,
+        quantity,
         description,
         category_id,
-        brand,
       },
     ]);
 
@@ -102,40 +98,43 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    // const { id, photo_url, display_name, price, qty, description } = body;
+
+    const {searchParams} = new URL(request.url)
     const body = await request.json();
-    const { id, photo_url, display_name, price, qty, description } = body;
+    const id =searchParams.get('id')
 
     // Validate input
     if (!id) {
       return throwInternalServerErrorException('Missing required field: id');
     }
-    if (photo_url) {
-      let fileName = new Date().toISOString();
-      let urlData = await uploadBase64Image(
-        photo_url,
-        'avatars/promotions',
-        fileName,
-      );
-      const { data, error } = await client
-        .from('products')
-        .update({ photo_url: urlData, display_name, price, qty, description })
-        .eq('id', id);
+    // if (photo_url) {
+    //   let fileName = new Date().toISOString();
+    //   let urlData = await uploadBase64Image(
+    //     photo_url,
+    //     'avatars/promotions',
+    //     fileName,
+    //   );
+    //   const { data, error } = await client
+    //     .from('products')
+    //     .update({ photo_url: urlData, display_name, price, qty, description })
+    //     .eq('id', id);
 
-      if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-      }
-    }
+    //   if (error) {
+    //     return NextResponse.json({ error: error.message }, { status: 500 });
+    //   }
+    // }
     // Update data in the products table
     const { data, error } = await client
       .from('products')
-      .update({ photo_url, display_name, price, qty, description })
-      .eq('id', id);
+      .update(body)
+      .eq('product_id', id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: 'update successfully' }, { status: 200 });
+    return NextResponse.json({ data: 'Product update successfully!' }, { status: 200 });
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }
@@ -143,7 +142,8 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const { id } = await request.json();
+    const {searchParams} = new URL(request.url)
+    const id =searchParams.get('id')
 
     // Validate input
     if (!id) {
@@ -151,13 +151,13 @@ export async function DELETE(request: Request) {
     }
 
     // Delete data from the products table
-    const { data, error } = await client.from('products').delete().eq('id', id);
+    const { data, error } = await client.from('products').delete().eq('product_id', id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: 'deleted successfully' }, { status: 200 });
+    return NextResponse.json({ data: 'Product deleted successfully!' }, { status: 200 });
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }

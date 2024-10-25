@@ -12,18 +12,19 @@ const logger = getLogger();
 
 export async function POST(request: Request) {
   try {
-    const { categories } = await request.json();
+    const { category_name,description } = await request.json();
 
     // Basic validation
-    if (!categories) {
+    if (!category_name || !description) {
       return NextResponse.json(
-        { message: 'Category name is required' },
+        { message: 'Missing required fields' },
         { status: 400 },
       );
     }
-    const { data, error } = await client.from('categories').insert([
+    const { data, error } = await client.from('product_category').insert([
       {
-        categories,
+        category_name,
+        description
       },
     ]);
     if (error) {
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
-    const { data, error } = await client.from('categories').select('*');
+    const { data, error } = await client.from('product_category').select('*');
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -54,48 +55,53 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { id, categories } = await request.json();
+    const {searchParams} = new URL(request.url)
+    const body = await request.json();
+    const id =searchParams.get('id')
+
 
     // Validate input
     if (!id) {
-      return throwInternalServerErrorException('Missing required field: id');
+      return NextResponse.json({ error: 'Missing required field: id' }, { status: 400 });
     }
 
     // Delete data from the products table
     const { data, error } = await client
-      .from('categories')
-      .update({ categories })
-      .eq('id', id);
+      .from('product_category')
+      .update(body)
+      .eq('category_id', id)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: 'updated successfully' }, { status: 200 });
+    return NextResponse.json({ data:"Category updated successfully!" }, { status: 200 });
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }
 }
 export async function DELETE(request: Request) {
   try {
-    const { id } = await request.json();
+    const {searchParams} = new URL(request.url)
+    const id =searchParams.get('id')
+
 
     // Validate input
     if (!id) {
-      return throwInternalServerErrorException('Missing required field: id');
+      return NextResponse.json({ error: 'Missing required field: id' }, { status: 400 });
     }
 
     // Delete data from the products table
     const { data, error } = await client
-      .from('categories')
+      .from('product_category')
       .delete()
-      .eq('id', id);
+      .eq('category_id', id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: 'deleted successfully' }, { status: 200 });
+    return NextResponse.json({ data: 'Category deleted successfully!' }, { status: 200 });
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }
