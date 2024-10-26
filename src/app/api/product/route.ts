@@ -26,12 +26,6 @@ export async function POST(request: Request) {
     ) {
       return throwInternalServerErrorException(`Missing required fields`);
     }
-    // let urlData = await uploadBase64Image(
-    //   photo_url,
-    //   'avatars/products',
-    //   fileName,
-    // );
-    // Insert data into the products table
     const { data, error } = await client.from('products').insert([
       {
         name,
@@ -67,30 +61,33 @@ export async function GET(request: Request) {
     const priceFilter = queryParams.get('priceFilter');
     const minPriceRange = queryParams.get('minPriceRange');
     const maxPriceRange = queryParams.get('maxPriceRange');
-
+    const product_id = queryParams.get('product_id');
     // Build query based on provided filters
-    let query = client
-      .from('products')
-      .select('quantity,product_category(category_name,description)');
+    let query = client.from('products').select('*');
     if (category) query = query.eq('category', category);
     if (bestseller) query = query.eq('best_seller', bestseller === 'true');
     if (rating) query = query.gte('rating', parseFloat(rating));
     if (brand) query = query.ilike('brand', `%${brand}%`);
     if (name) query = query.ilike('display_name', `%${name}%`);
     if (priceFilter) query = query.order('price', { ascending: true });
-
+    if (product_id) query = query.eq('product_id', product_id);
     // Handle price filtering
     if (minPriceRange && maxPriceRange) {
       query = query
         .gte('price', parseFloat(minPriceRange))
         .lte('price', parseFloat(maxPriceRange));
     }
-
     const { data, error } = await query;
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-
+    for (let i = 0; i < data.length; i++) {
+      const { data: productImageData, error: productImageError } = await client
+        .from('product_images')
+        .select('image_url')
+        .eq('product_id', data[i].product_id);
+      data[i]['ImageData'] = await productImageData;
+    }
     return NextResponse.json({ data }, { status: 200 });
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
@@ -109,22 +106,6 @@ export async function PUT(request: Request) {
     if (!id) {
       return throwInternalServerErrorException('Missing required field: id');
     }
-    // if (photo_url) {
-    //   let fileName = new Date().toISOString();
-    //   let urlData = await uploadBase64Image(
-    //     photo_url,
-    //     'avatars/promotions',
-    //     fileName,
-    //   );
-    //   const { data, error } = await client
-    //     .from('products')
-    //     .update({ photo_url: urlData, display_name, price, qty, description })
-    //     .eq('id', id);
-
-    //   if (error) {
-    //     return NextResponse.json({ error: error.message }, { status: 500 });
-    //   }
-    // }
     // Update data in the products table
     const { data, error } = await client
       .from('products')
@@ -180,11 +161,11 @@ export async function DELETE(request: Request) {
     const { error: deleteImagesError } = await client
       .from('product_images')
       .delete()
-      .eq('product_id',id)
+      .eq('product_id', id);
 
-      if (deleteImagesError) {
-        return throwInternalServerErrorException(deleteImagesError.message);
-      }
+    if (deleteImagesError) {
+      return throwInternalServerErrorException(deleteImagesError.message);
+    }
 
     // Delete data from the products table
     const { data, error } = await client

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { client } from '../supabaseClient';
 import { throwInternalServerErrorException } from '~/core/http-exceptions';
-import { uploadBase64Image } from '../utils/fileUpload';
+import { uploadBase64Image } from '../utils/fileHandler';
 
 export async function POST(request: Request) {
   try {
@@ -78,7 +78,7 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const { error:dbError } = await client
+    const { error: dbError } = await client
       .from('product_images')
       .delete()
       .eq('image_id', id);
