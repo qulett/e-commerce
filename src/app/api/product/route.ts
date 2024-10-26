@@ -154,6 +154,38 @@ export async function DELETE(request: Request) {
       return throwInternalServerErrorException('Missing required field: id');
     }
 
+    const { data: images, error: fetchImagesError } = await client
+      .from('product_images')
+      .select('image_url')
+      .eq('product_id', id);
+
+    if (fetchImagesError) {
+      return throwInternalServerErrorException(fetchImagesError.message);
+    }
+
+    // Step 2: Delete images from Supabase Storage
+    const filePaths = images.map((image) => {
+      const fileName = image.image_url.split('/').pop();
+      return `product_images/${fileName}`;
+    });
+
+    const { error: deleteStorageError } = await client.storage
+      .from('store')
+      .remove(filePaths);
+
+    if (deleteStorageError) {
+      return throwInternalServerErrorException(deleteStorageError.message);
+    }
+
+    const { error: deleteImagesError } = await client
+      .from('product_images')
+      .delete()
+      .eq('product_id',id)
+
+      if (deleteImagesError) {
+        return throwInternalServerErrorException(deleteImagesError.message);
+      }
+
     // Delete data from the products table
     const { data, error } = await client
       .from('products')
