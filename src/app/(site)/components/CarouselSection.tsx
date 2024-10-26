@@ -23,7 +23,7 @@ interface Banner {
 
 // Skeleton loader component for carousel items
 const SkeletonLoader = () => (
-  <div className="relative p-1 h-96 w-full animate-pulse bg-gray-300 rounded-lg">
+  <div className="relative p-1 h-80 md:h-96 w-full animate-pulse bg-gray-300 rounded-lg">
     <div className="absolute inset-0 bg-gray-200"></div>
   </div>
 );
@@ -72,7 +72,7 @@ const CarouselSection: React.FC = () => {
             : // Display carousel items after loading
               carouselItems.map((item) => (
                 <CarouselItem key={item.banner_id}>
-                  <div className="relative p-1 h-96 w-full">
+                  <div className="relative p-1 h-80 md:h-96 w-full">
                     <a
                       href={`/category/${item.category_id}`}
                       onClick={(e) => e.stopPropagation()}
@@ -81,8 +81,8 @@ const CarouselSection: React.FC = () => {
                         src={item.image_url}
                         alt={item.title || 'Banner Image'}
                         layout="fill"
-                        objectFit="cover"
-                        className="rounded-t-lg"
+                        objectFit="contain" // Show full image within the container
+                        className="rounded-lg"
                         priority
                       />
                     </a>
@@ -90,7 +90,7 @@ const CarouselSection: React.FC = () => {
                 </CarouselItem>
               ))}
         </CarouselContent>
-        <CarouselPrevious className="hidden md:block h-10 w-10 " />
+        <CarouselPrevious className="hidden md:block h-10 w-10" />
         <CarouselNext className="hidden md:block h-10 w-10" />
       </Carousel>
     </div>
