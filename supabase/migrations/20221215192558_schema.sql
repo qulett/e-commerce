@@ -42,7 +42,7 @@ create table customers_subscriptions (
 );
 
 insert into storage.buckets (id, name, PUBLIC)
-  values ('avatars', 'avatars', true);
+  values ('store', 'store', true);
 
 alter table users enable row level security;
 
@@ -85,10 +85,17 @@ customers_subscriptions
   for select
     using (auth.uid () = user_id);
 
-create policy "Avatars can be read and written only by the user that owns the
-  avatar" on storage.objects
-  for all
-    using (bucket_id = 'avatars'
-      and (replace(storage.filename (name), concat('.', storage.extension (name)), '')::uuid) = auth.uid ())
-      with check (bucket_id = 'avatars'
-      and (replace(storage.filename (name), concat('.', storage.extension (name)), '')::uuid) = auth.uid ());
+
+alter table storage.objects enable row level security;
+-- Allow authenticated users to read from and write to the bucket
+create policy "Authenticated users can access private bucket objects"
+on storage.objects
+for all
+using (
+  bucket_id = 'store' 
+  and auth.role() in ('authenticated', 'anon')
+)
+with check (
+  bucket_id = 'store' 
+  and auth.role() in ('authenticated', 'anon')
+);

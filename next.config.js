@@ -15,13 +15,17 @@ module.exports = withAnalyzer({
 })(withContentlayer(nextConfig));
 
 function getRemotePatterns() {
-  // add here the remote patterns for your images
-
   const remotePatterns = [
     {
       protocol: 'https',
       hostname: 'cdn.dummyjson.com',
       pathname: '/**',
+    },
+    // Add Supabase hostname for images
+    {
+      protocol: 'https',
+      hostname: 'ffxbmphklnkguyvfsaob.supabase.co',
+      pathname: '/storage/v1/object/public/banners/**', // Adjust the path if necessary
     },
   ];
 
