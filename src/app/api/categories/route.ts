@@ -6,13 +6,13 @@ import {
   throwInternalServerErrorException,
 } from '~/core/http-exceptions';
 import { client } from '../supabaseClient';
-import { uploadBase64Image } from '../utils/fileUpload';
+import { uploadBase64Image } from '../utils/fileHandler';
 
 const logger = getLogger();
 
 export async function POST(request: Request) {
   try {
-    const { category_name,description } = await request.json();
+    const { category_name, description } = await request.json();
 
     // Basic validation
     if (!category_name || !description) {
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const { data, error } = await client.from('product_category').insert([
       {
         category_name,
-        description
+        description,
       },
     ]);
     if (error) {
@@ -55,40 +55,47 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const {searchParams} = new URL(request.url)
+    const { searchParams } = new URL(request.url);
     const body = await request.json();
-    const id =searchParams.get('id')
-
+    const id = searchParams.get('id');
 
     // Validate input
     if (!id) {
-      return NextResponse.json({ error: 'Missing required field: id' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required field: id' },
+        { status: 400 },
+      );
     }
 
     // Delete data from the products table
     const { data, error } = await client
       .from('product_category')
       .update(body)
-      .eq('category_id', id)
+      .eq('category_id', id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data:"Category updated successfully!" }, { status: 200 });
+    return NextResponse.json(
+      { data: 'Category updated successfully!' },
+      { status: 200 },
+    );
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }
 }
 export async function DELETE(request: Request) {
   try {
-    const {searchParams} = new URL(request.url)
-    const id =searchParams.get('id')
-
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
     // Validate input
     if (!id) {
-      return NextResponse.json({ error: 'Missing required field: id' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required field: id' },
+        { status: 400 },
+      );
     }
 
     // Delete data from the products table
@@ -101,7 +108,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: 'Category deleted successfully!' }, { status: 200 });
+    return NextResponse.json(
+      { data: 'Category deleted successfully!' },
+      { status: 200 },
+    );
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }
