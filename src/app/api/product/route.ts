@@ -13,17 +13,17 @@ const logger = getLogger();
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const {
-      name,
-      price,
-      quantity,
-      description,
-      category_id,
-    } = body;
+    const { name, price, quantity, description, category_id } = body;
     let fileName = new Date().toISOString();
 
     // Validate input
-    if (!description || !name ||!category_id || price == null || quantity == null) {
+    if (
+      !description ||
+      !name ||
+      !category_id ||
+      price == null ||
+      quantity == null
+    ) {
       return throwInternalServerErrorException(`Missing required fields`);
     }
     // let urlData = await uploadBase64Image(
@@ -69,8 +69,9 @@ export async function GET(request: Request) {
     const maxPriceRange = queryParams.get('maxPriceRange');
 
     // Build query based on provided filters
-    let query = client.from('products').select('*');
-
+    let query = client
+      .from('products')
+      .select('quantity,product_category(category_name,description)');
     if (category) query = query.eq('category', category);
     if (bestseller) query = query.eq('best_seller', bestseller === 'true');
     if (rating) query = query.gte('rating', parseFloat(rating));
@@ -100,9 +101,9 @@ export async function PUT(request: Request) {
   try {
     // const { id, photo_url, display_name, price, qty, description } = body;
 
-    const {searchParams} = new URL(request.url)
+    const { searchParams } = new URL(request.url);
     const body = await request.json();
-    const id =searchParams.get('id')
+    const id = searchParams.get('id');
 
     // Validate input
     if (!id) {
@@ -134,7 +135,10 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: 'Product update successfully!' }, { status: 200 });
+    return NextResponse.json(
+      { data: 'Product update successfully!' },
+      { status: 200 },
+    );
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }
@@ -142,8 +146,8 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const {searchParams} = new URL(request.url)
-    const id =searchParams.get('id')
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
     // Validate input
     if (!id) {
@@ -151,13 +155,19 @@ export async function DELETE(request: Request) {
     }
 
     // Delete data from the products table
-    const { data, error } = await client.from('products').delete().eq('product_id', id);
+    const { data, error } = await client
+      .from('products')
+      .delete()
+      .eq('product_id', id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data: 'Product deleted successfully!' }, { status: 200 });
+    return NextResponse.json(
+      { data: 'Product deleted successfully!' },
+      { status: 200 },
+    );
   } catch (error: any) {
     return throwInternalServerErrorException(error.message);
   }

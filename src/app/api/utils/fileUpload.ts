@@ -32,7 +32,9 @@ export async function uploadBase64Image(
     }
 
     // Get public URL for the uploaded file
-    const { data } = client.storage.from(bucketName).getPublicUrl(fileName);
+    const { data } = client.storage
+      .from(bucketName)
+      .getPublicUrl(`${folderName}/${fileName}`);
 
     // Return the public URL
     return data.publicUrl;
@@ -52,4 +54,20 @@ async function base64ToFile(base64: string, filename: string) {
   const buffer = await readFileAsync('image.png');
   await unlinkAsync('image.png');
   return buffer;
+}
+
+export async function deleteUploadedImage(
+  bucketName: string,
+  folderName: string,
+  publicUrl: string,
+) {
+  const fileName = publicUrl.split(`${bucketName}/`)[1];
+  const { data: deleteData, error: deleteError } = await client.storage
+    .from(bucketName)
+    .remove([`${fileName}`]);
+
+  if (deleteError) {
+    return false;
+  }
+  return true;
 }

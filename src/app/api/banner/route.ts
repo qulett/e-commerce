@@ -1,55 +1,74 @@
 import { NextResponse } from 'next/server';
 import getLogger from '~/core/logger';
+
 import {
   throwBadRequestException,
   throwInternalServerErrorException,
 } from '~/core/http-exceptions';
 import { client } from '../supabaseClient';
+import { deleteUploadedImage, uploadBase64Image } from '../utils/fileUpload';
 
 const logger = getLogger();
 
-const validateRequestBody = (body: any, requiredFields: string[]) => {
-  for (const field of requiredFields) {
-    if (!body[field]) return false;
-  }
-  return true;
-};
-
-// Helper function to upload an image to Supabase bucket
-async function uploadImageToSupabase(base64String: string, imageName: string) {
-  const imageBuffer = Buffer.from(base64String, 'base64');
-  const { data, error } = await client.storage
-    .from('store') // replace with your bucket name
-    .upload(`banners/${imageName}`, imageBuffer, {
-      contentType: 'image/jpeg', // Adjust if necessary
-      upsert: true,
-    });
-
-  if (error) throw new Error(`Failed to upload image: ${error.message}`);
-
-  // Generate a public URL for the uploaded image
-  const { data: publicUrlData } = client.storage
-    .from('store')
-    .getPublicUrl(`banners/${imageName}`);
-
-  if (!publicUrlData || !publicUrlData.publicUrl) {
-    throw new Error('Unable to retrieve the public URL of the uploaded image');
-  }
-
-  return { publicUrl: publicUrlData.publicUrl, path: `banners/${imageName}` };
-}
-
-// Helper function to delete image from Supabase bucket
-async function deleteImageFromSupabase(imagePath: string) {
-  const { error } = await client.storage.from('store').remove([imagePath]);
-  if (error) throw new Error(`Failed to delete image: ${error.message}`);
-}
-
-export async function GET() {
+export async function POST(request: Request) {
   try {
-    const { data, error } = await client.from('banners').select('*');
-    if (error)
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    const body = await request.json();
+    const { title, image_url, start_date, end_date, category_id, product_id } =
+      body;
+    let fileName = new Date().toISOString();
+
+    // Validate input
+    if (!image_url || !start_date || !end_date) {
+      return throwInternalServerErrorException(`Missing required fields`);
+    }
+
+    let urlData = await uploadBase64Image(
+      image_url,
+      'store',
+      'banner',
+      fileName,
+    );
+
+    let payload: Banner = {
+      title,
+      image_url: urlData,
+      start_date,
+      end_date,
+    };
+    if (category_id) {
+      payload['category_id'] = category_id;
+    }
+    if (product_id) {
+      payload['product_id'] = product_id;
+    }
+
+    // Insert data into the products table
+    const { data, error } = await client.from('banners').insert([payload]);
+
+    if (error) {
+      return throwInternalServerErrorException(error.message);
+    }
+
+    return NextResponse.json(
+      { data: 'banner added successfully' },
+      { status: 201 },
+    );
+  } catch (error: any) {
+    return throwInternalServerErrorException(error.message);
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const currentDate = new Date().toISOString(); // Get the current date in ISO format
+
+    // Fetch promotions that haven't expired yet
+    let query = client.from('banners').select('*').eq('is_active', true); // Only select promotions where expired_at is greater than the current date
+
+    const { data, error } = await query;
+    if (error) {
+      throw error;
+    }
 
     return NextResponse.json({ data }, { status: 200 });
   } catch (error: any) {
@@ -57,175 +76,130 @@ export async function GET() {
   }
 }
 
-// POST - Create a new banner
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const requiredFields = [
-      'title',
-      'image_base64',
-      'category_id',
-      'start_date',
-      'end_date',
-      'is_active',
-    ];
-
-    if (!validateRequestBody(body, requiredFields)) {
-      return NextResponse.json(
-        { message: 'Missing required fields' },
-        { status: 400 },
-      );
-    }
-
-    // Upload the image to Supabase
-    const { publicUrl, path } = await uploadImageToSupabase(
-      body.image_base64,
-      `banner_${Date.now()}.jpg`,
-    );
-
-    // Insert the banner data into the database
-    const bannerData = {
-      title: body.title,
-      image_url: publicUrl,
-      category_id: body.category_id,
-      start_date: body.start_date,
-      end_date: body.end_date,
-      is_active: body.is_active,
-    };
-    const { data, error } = await client.from('banners').insert([bannerData]);
-
-    if (error)
-      return NextResponse.json({ error: error.message }, { status: 500 });
-
-    return NextResponse.json(
-      { message: 'Banner added successfully', data },
-      { status: 201 },
-    );
-  } catch (error: any) {
-    logger.error('Error adding banner:', error);
-    return throwInternalServerErrorException(error.message);
-  }
-}
-
-// PUT - Update an existing banner
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const requiredFields = [
-      'id',
-      'title',
-      'category_id',
-      'start_date',
-      'end_date',
-      'is_active',
-    ];
+    const {
+      banner_id,
+      title,
+      image_url,
+      start_date,
+      end_date,
+      category_id,
+      product_id,
+    } = body;
 
-    if (!validateRequestBody(body, requiredFields)) {
-      return NextResponse.json(
-        { message: 'Missing required fields' },
-        { status: 400 },
+    // Validate `id` first
+    if (!banner_id) {
+      return throwInternalServerErrorException(
+        'Missing required field: banner_id',
       );
     }
-
-    const { id, image_base64, ...updateFields } = body;
-
-    // Check if a new image was provided
-    if (image_base64) {
-      // Get the current banner details to retrieve the old image URL
-      const { data: currentBannerData, error: fetchError } = await client
-        .from('banners')
-        .select('image_url') // Retrieve path instead of full URL
-        .eq('id', id)
-        .single();
-
-      if (fetchError)
-        return NextResponse.json(
-          { error: fetchError.message },
-          { status: 500 },
-        );
-
-      // Delete the old image if it exists
-      if (currentBannerData?.image_url) {
-        await deleteImageFromSupabase(currentBannerData.image_url);
+    let updatePayload: any = {};
+    if (image_url) {
+      let query = client.from('banners').select('*').eq('banner_id', banner_id);
+      const { data: previousData, error: previousDataError } = await query;
+      if (previousDataError) {
+        return throwInternalServerErrorException(previousDataError.message);
       }
 
-      // Upload the new image
-      const { publicUrl: newImageUrl, path: newImagePath } =
-        await uploadImageToSupabase(image_base64, `banner_${Date.now()}.jpg`);
-      updateFields.image_url = newImageUrl;
-      updateFields.image_url = newImagePath; // Update the path as well
+      const checkDeletionStatus = await deleteUploadedImage(
+        'store',
+        'banner',
+        previousData[0].image_url,
+      );
+      if (!checkDeletionStatus) {
+        return throwInternalServerErrorException('deletion of file failed');
+      }
+      let fileName = new Date().toISOString();
+      let urlData = await uploadBase64Image(
+        image_url,
+        'store',
+        'banner',
+        fileName,
+      );
+      updatePayload['image_url'] = urlData;
+    }
+    if (title) {
+      updatePayload['title'] = title;
+    }
+    if (start_date) {
+      updatePayload['start_date'] = start_date;
+    }
+    if (end_date) {
+      updatePayload['end_date'] = end_date;
+    }
+    if (category_id) {
+      updatePayload['category_id'] = category_id;
+    }
+    if (product_id) {
+      updatePayload['product_id'] = product_id;
     }
 
-    // Update the banner data in the database
-    const { data, error } = await client
+    const { data: updateData, error: updateError } = await client
       .from('banners')
-      .update(updateFields)
-      .eq('id', id);
-    if (error)
-      return NextResponse.json({ error: error.message }, { status: 500 });
-
+      .update([updatePayload])
+      .eq('banner_id', banner_id);
+    if (updateError) {
+      return throwInternalServerErrorException(updateError.message);
+    }
     return NextResponse.json(
-      { message: 'Banner updated successfully', data },
-      { status: 200 },
+      { message: 'promotion update successfully' },
+      { status: 201 },
     );
   } catch (error: any) {
-    logger.error('Error updating banner:', error);
     return throwInternalServerErrorException(error.message);
   }
 }
 
-// DELETE - Remove an existing banner
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
-    if (!id)
-      return NextResponse.json(
-        { message: 'Banner ID is required' },
-        { status: 400 },
-      );
-
-    // Get the banner details to retrieve the image URL
-    const { data: currentBannerData, error: fetchError } = await client
-      .from('banners')
-      .select('image_url') // Retrieve image_url instead of full URL
-      .eq('banner_id', id)
-      .single();
-
-    if (fetchError)
-      return NextResponse.json({ error: fetchError.message }, { status: 500 });
-
-    // Delete the image from Supabase if it exists
-    if (currentBannerData?.image_url) {
-      await deleteImageFromSupabase(currentBannerData.image_url);
+    // Validate input
+    if (!id) {
+      return throwInternalServerErrorException('Missing required field: id');
     }
 
-    // Delete the banner data from the database
+    const { data: previousData, error: previousDataError } = await client
+      .from('banners')
+      .select('*')
+      .eq('banner_id', id);
+    if (previousDataError) {
+      return throwInternalServerErrorException(previousDataError.message);
+    }
+    const checkDeletionStatus = await deleteUploadedImage(
+      'store',
+      'banner',
+      previousData[0].image_url,
+    );
+    if (!checkDeletionStatus) {
+      return throwInternalServerErrorException('deletion of file failed');
+    }
+
+    // Delete data from the products table
     const { data, error } = await client
       .from('banners')
       .delete()
       .eq('banner_id', id);
-    if (error)
-      return NextResponse.json({ error: error.message }, { status: 500 });
 
-    return NextResponse.json(
-      { message: 'Banner deleted successfully', data },
-      { status: 200 },
-    );
+    if (error) {
+      return throwInternalServerErrorException(error.message);
+    }
+
+    return NextResponse.json({ data: 'deleted successfully' }, { status: 200 });
   } catch (error: any) {
-    logger.error('Error deleting banner:', error);
     return throwInternalServerErrorException(error.message);
   }
 }
 
 export type Banner = {
-  bannerId: string; // UUID
   title: string; // VARCHAR(255)
-  imageUrl: string; // TEXT
-  startDate: Date; // DATE
-  endDate: Date; // DATE
-  isActive: boolean; // BOOLEAN
-  categoryId?: string | null; // UUID (optional, can be null)
-  productId?: string | null; // UUID (optional, can be null)
+  image_url: string | NextResponse<{}>; // TEXT
+  start_date: Date; // DATE
+  end_date: Date; // DATE
+  is_active?: boolean; // BOOLEAN
+  category_id?: string | null; // UUID (optional, can be null)
+  product_id?: string | null; // UUID (optional, can be null)
 };
