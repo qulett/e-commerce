@@ -6,7 +6,7 @@ import {
   throwInternalServerErrorException,
 } from '~/core/http-exceptions';
 import { client } from '../supabaseClient';
-import { deleteUploadedImage, uploadBase64Image } from '../utils/fileUpload';
+import { deleteUploadedImage, uploadBase64Image } from '../utils/fileHandler';
 
 const logger = getLogger();
 
