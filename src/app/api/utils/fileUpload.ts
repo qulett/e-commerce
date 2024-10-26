@@ -12,6 +12,7 @@ const logger = getLogger();
 export async function uploadBase64Image(
   base64: string,
   bucketName: string,
+  folderName: string,
   fileName: string,
 ) {
   try {
@@ -20,7 +21,7 @@ export async function uploadBase64Image(
     // Upload image to Supabase Storage
     const { data: fileData, error } = await client.storage
       .from(bucketName)
-      .upload(fileName, file, {
+      .upload(`${folderName}/${fileName}`, file, {
         cacheControl: '3600',
         upsert: true, // Set to true if you want to overwrite
       });

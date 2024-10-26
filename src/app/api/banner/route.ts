@@ -19,7 +19,7 @@ const validateRequestBody = (body: any, requiredFields: string[]) => {
 async function uploadImageToSupabase(base64String: string, imageName: string) {
   const imageBuffer = Buffer.from(base64String, 'base64');
   const { data, error } = await client.storage
-    .from('banners') // replace with your bucket name
+    .from('store') // replace with your bucket name
     .upload(`banners/${imageName}`, imageBuffer, {
       contentType: 'image/jpeg', // Adjust if necessary
       upsert: true,
@@ -29,7 +29,7 @@ async function uploadImageToSupabase(base64String: string, imageName: string) {
 
   // Generate a public URL for the uploaded image
   const { data: publicUrlData } = client.storage
-    .from('banners')
+    .from('store')
     .getPublicUrl(`banners/${imageName}`);
 
   if (!publicUrlData || !publicUrlData.publicUrl) {
@@ -41,7 +41,7 @@ async function uploadImageToSupabase(base64String: string, imageName: string) {
 
 // Helper function to delete image from Supabase bucket
 async function deleteImageFromSupabase(imagePath: string) {
-  const { error } = await client.storage.from('banners').remove([imagePath]);
+  const { error } = await client.storage.from('store').remove([imagePath]);
   if (error) throw new Error(`Failed to delete image: ${error.message}`);
 }
 
@@ -218,3 +218,14 @@ export async function DELETE(request: Request) {
     return throwInternalServerErrorException(error.message);
   }
 }
+
+export type Banner = {
+  bannerId: string; // UUID
+  title: string; // VARCHAR(255)
+  imageUrl: string; // TEXT
+  startDate: Date; // DATE
+  endDate: Date; // DATE
+  isActive: boolean; // BOOLEAN
+  categoryId?: string | null; // UUID (optional, can be null)
+  productId?: string | null; // UUID (optional, can be null)
+};

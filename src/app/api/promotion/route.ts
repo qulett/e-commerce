@@ -13,29 +13,44 @@ const logger = getLogger();
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { photo_url, expired_at } = body;
+    const { title, image_url, start_date, end_date, category_id, product_id } =
+      body;
     let fileName = new Date().toISOString();
 
     // Validate input
-    if (!photo_url || !expired_at) {
+    if (!image_url || !start_date || !end_date) {
       return throwInternalServerErrorException(`Missing required fields`);
     }
+
     let urlData = await uploadBase64Image(
-      photo_url,
-      'avatars/promotions',
+      image_url,
+      'store',
+      'banner',
       fileName,
     );
+
+    let payload: Banner = {
+      title,
+      image_url: urlData,
+      start_date,
+      end_date,
+    };
+    if (category_id) {
+      payload['category_id'] = category_id;
+    }
+    if (product_id) {
+      payload['product_id'] = product_id;
+    }
+
     // Insert data into the products table
-    const { data, error } = await client
-      .from('promotion')
-      .insert([{ photo_url: urlData, active: true, expired_at }]);
+    const { data, error } = await client.from('banners').insert([payload]);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return throwInternalServerErrorException(error.message);
     }
 
     return NextResponse.json(
-      { data: 'promotion added successfully' },
+      { data: 'banner added successfully' },
       { status: 201 },
     );
   } catch (error: any) {
@@ -77,7 +92,8 @@ export async function PUT(request: Request) {
       let fileName = new Date().toISOString();
       let urlData = await uploadBase64Image(
         photo_url,
-        'avatars/promotions',
+        'store',
+        'banner',
         fileName,
       );
       const { data, error } = await client
@@ -131,3 +147,13 @@ export async function DELETE(request: Request) {
     return throwInternalServerErrorException(error.message);
   }
 }
+
+export type Banner = {
+  title: string; // VARCHAR(255)
+  image_url: string | NextResponse<{}>; // TEXT
+  start_date: Date; // DATE
+  end_date: Date; // DATE
+  is_active?: boolean; // BOOLEAN
+  category_id?: string | null; // UUID (optional, can be null)
+  product_id?: string | null; // UUID (optional, can be null)
+};
