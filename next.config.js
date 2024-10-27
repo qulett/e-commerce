@@ -25,7 +25,7 @@ function getRemotePatterns() {
     {
       protocol: 'https',
       hostname: 'ffxbmphklnkguyvfsaob.supabase.co',
-      pathname: '/storage/v1/object/public/banners/**', // Adjust the path if necessary
+      pathname: '/storage/v1/object/public/store/**', // Adjust the path if necessary
     },
   ];
 
