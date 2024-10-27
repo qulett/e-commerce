@@ -9,14 +9,16 @@ import Button from '~/core/ui/Button';
 import { ChevronRight } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '~/core/ui/scroll-area';
 import { useEffect, useState } from 'react';
-import { CategoryProps } from '~/lib/interfaces/products';
+import { CategoryProps, Product } from '~/lib/interfaces/products';
 import Link from 'next/link';
 import Image from 'next/image';
+import ProductCard from './components/ProductCard';
 
 export default function Home() {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const fetchProducts = async () => {
+  const fetchProductsByCategory = async () => {
     try {
       const response = await fetch(`https://dummyjson.com/products/categories`);
       if (!response.ok) {
@@ -28,8 +30,22 @@ export default function Home() {
       console.log(error);
     }
   };
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`https://dummyjson.com/products?limit=12`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      console.log(data)
+      setProducts(data.products);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
+    fetchProductsByCategory();
     fetchProducts();
   }, []);
 
@@ -41,8 +57,8 @@ export default function Home() {
   ];
 
   return (
-    <div className={'flex flex-col space-y-16 bg-primary-100'}>
-      <div className="mt-4">
+    <div className={'flex flex-col space-y-16 bg-primary-100 w-full'}>
+      <div className="w-full">
         <CarouselSection />
       </div>
 
@@ -56,29 +72,16 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4  gap-4 justify-center">
-          {Array.from({ length: 12 }).map((_, index) => (
-            <div
-              key={index}
-              className=" rounded-lg  shadow-lg flex flex-col space-y-2 bg-gray-100 overflow-hidden pb-4 "
-            >
-              <div className="bg-black h-24 md:h-36">Image</div>
-              <div className="text-sm md:text-base font-bold px-2">
-                True Wireless Earbuds
-              </div>
-              <div className="flex flex-row px-2 justify-between items-center">
-                <div className="flex flex-col">
-                  <div className="text-sm md:text-base font-bold">
-                    Rs. 2,229
-                  </div>
-                  <div className="text-sm text-green-600 font-semibold">
-                    20%off
-                  </div>
-                </div>
-                <Button size={'sm'} className="h-8">
-                  Buy Now
-                </Button>
-              </div>
-            </div>
+          {products && products.map((item, i) => (
+             <ProductCard
+             key={i}
+             id={item.id}
+             ratings={item.rating}
+             imageUrl={item.images[0]}
+             productName={item.title}
+             discount={item.discountPercentage}
+             price={item.price}
+             />
           ))}
         </div>
       </Container>
@@ -129,14 +132,21 @@ export default function Home() {
         </div>
         <ScrollArea className="w-full ">
           <div className="flex flex-row gap-4  ">
-            {Array.from({ length: 6 }).map((_, index) => (
+            {products && products.map((item, i) => (
               <div
-                key={index}
+                key={i}
                 className=" rounded-lg shadow-lg  mb-4 flex flex-col space-y-2 bg-white overflow-hidden pb-4 "
               >
-                <div className="bg-black h-60 w-60">Image</div>
-                <div className="font-bold text-center">
-                  True Wireless Earbuds
+                <div className="h-60 w-60 relative">
+                  <Image 
+                  src={item.images[0]}
+                  alt='popular'
+                  fill
+                  objectFit="cover"
+                  />
+                </div>
+                <div className="font-bold text-center px-3">
+                  {item.title}
                 </div>
               </div>
             ))}
