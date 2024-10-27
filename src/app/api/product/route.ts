@@ -53,7 +53,7 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const queryParams = url.searchParams;
-    const category = queryParams.get('category');
+    const category_id = queryParams.get('category_id');
     const bestseller = queryParams.get('bestseller');
     const rating = queryParams.get('rating');
     const brand = queryParams.get('brand');
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
     const product_id = queryParams.get('product_id');
     // Build query based on provided filters
     let query = client.from('products').select('*');
-    if (category) query = query.eq('category', category);
+    if (category_id) query = query.eq('category_id', category_id);
     if (bestseller) query = query.eq('best_seller', bestseller === 'true');
     if (rating) query = query.gte('rating', parseFloat(rating));
     if (brand) query = query.ilike('brand', `%${brand}%`);
