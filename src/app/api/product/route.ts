@@ -63,7 +63,7 @@ export async function GET(request: Request) {
     const maxPriceRange = queryParams.get('maxPriceRange');
     const product_id = queryParams.get('product_id');
     // Build query based on provided filters
-    let query = client.from('products').select('*');
+    let query = client.from('products').select(`*,product_category(category_name)`);
     if (category_id) query = query.eq('category_id', category_id);
     if (bestseller) query = query.eq('best_seller', bestseller === 'true');
     if (rating) query = query.gte('rating', parseFloat(rating));
