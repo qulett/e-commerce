@@ -84,7 +84,7 @@ export async function GET(request: Request) {
     for (let i = 0; i < data.length; i++) {
       const { data: productImageData, error: productImageError } = await client
         .from('product_images')
-        .select('image_url')
+        .select('image_id,image_url')
         .eq('product_id', data[i].product_id);
       data[i]['ImageData'] = await productImageData;
     }
