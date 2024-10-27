@@ -116,7 +116,7 @@ const ProductDetails = () => {
                       className="group relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
                     >
                       <span className="sr-only">{image}</span>
-                      <span className="absolute inset-0 overflow-hidden rounded-md bg-gray-100">
+                      <span className="absolute inset-0 overflow-hidden rounded-md bg-gray-200 shadow-sm">
                       <Image
                         alt="image"
                         src={image}
@@ -136,7 +136,7 @@ const ProductDetails = () => {
               <TabPanels className="aspect-h-1 aspect-w-1 w-full">
                 {productData?.images.map((image, i) => (
                   <TabPanel key={i}>
-                    <div className="relative w-full h-0 pb-[100%] sm:rounded-lg bg-gray-100">
+                    <div className="relative w-full h-0 pb-[100%] sm:rounded-lg bg-gray-200 shadow-sm">
                       <Image
                         alt="image"
                         src={image}

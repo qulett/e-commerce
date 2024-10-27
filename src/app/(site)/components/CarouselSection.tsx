@@ -52,7 +52,7 @@ const CarouselSection: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className='w-full'>
       <Carousel
         className="w-full"
         plugins={[
@@ -72,17 +72,18 @@ const CarouselSection: React.FC = () => {
             : // Display carousel items after loading
               carouselItems.map((item) => (
                 <CarouselItem key={item.banner_id}>
-                  <div className="relative p-1 h-80 md:h-96 w-full">
+                  <div className="relative p-1 h-80 md:h-[520px] w-full">
                     <a
                       href={`/category/${item.category_id}`}
                       onClick={(e) => e.stopPropagation()}
+                      className='w-full'
                     >
                       <Image
                         src={item.image_url}
                         alt={item.title || 'Banner Image'}
-                        layout="fill"
-                        objectFit="contain" // Show full image within the container
-                        className="rounded-lg"
+                        fill
+                        objectFit="cover" // Show full image within the container
+                        className="rounded-lg w-full"
                         priority
                       />
                     </a>

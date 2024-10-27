@@ -26,7 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   ratings,
 }) => {
   return (
-    <Link href={`/products/${id}`} className="flex flex-col bg-white rounded-xl">
+    <Link href={`/products/${id}`} className="flex flex-col bg-white rounded-xl shadow-lg">
       <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden lg:aspect-none group-hover:opacity-75 lg:h-80">
         <div className="relative w-full h-0 pb-[100%] sm:rounded-lg">
           <Image
